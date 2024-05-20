@@ -36,18 +36,10 @@ export function UpcomingMovieList() {
           <ImageListItem key="Subheader" cols={3} style={{height: 'auto'}}>
             <ListSubheader component="div">개봉 예정 영화</ListSubheader>
           </ImageListItem>
-          {movies.map((movie) => (
-              <ImageListItem key={movie.id}
-                             onClick={() => handleClickOpen(movie)}>
-                <img
-                    src={"https://image.tmdb.org/t/p/w500" + movie.posterPath}
-                    alt={movie.title}
-                />
-                <ImageListItemBar
-                    title={movie.title}
-                    subtitle={movie.releaseDate}
-                    position="overlay"
-                />
+          {movies.length > 0 && movies.map((movie) => (
+              <ImageListItem key={movie.id} onClick={() => handleClickOpen(movie)}>
+                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>
+                <ImageListItemBar title={movie.title}/>
               </ImageListItem>
           ))}
         </ImageList>
@@ -62,6 +54,6 @@ export function UpcomingMovieList() {
 }
 
 async function getUpcomingMovies() {
-  const response = await axios.get('/api/upcoming');
+  const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`);
   return response.data;
 }

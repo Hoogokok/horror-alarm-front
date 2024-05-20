@@ -14,7 +14,7 @@ export function StreamingTimeline() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/streaming/expired')
+    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`)
     .then((response) => {
       setMovies(response.data.expiredMovies);
     });

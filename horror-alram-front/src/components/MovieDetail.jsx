@@ -18,7 +18,7 @@ export default function Detail() {
   const {id} = useParams();
 
   useEffect(() => {
-    axios.get(`/api/streaming/expired/detail/${id}`)
+    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired/api/streaming/expired/detail/${id}`)
     .then((response) => {
       setMovie(response.data);
     });
