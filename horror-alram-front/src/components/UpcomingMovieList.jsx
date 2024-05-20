@@ -39,7 +39,11 @@ export function UpcomingMovieList() {
           {movies.length > 0 && movies.map((movie) => (
               <ImageListItem key={movie.id} onClick={() => handleClickOpen(movie)}>
                 <img src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`} alt={movie.title}/>
-                <ImageListItemBar title={movie.title}/>
+                <ImageListItemBar
+                    title={movie.title}
+                    subtitle={movie.releaseDate}
+                    position="overlay"
+                />
               </ImageListItem>
           ))}
         </ImageList>
