@@ -21,6 +21,8 @@ export function StreamingTimeline() {
   }, []);
 
   return (
+    movies.length === 0 ? 
+      <Typography>종료 예정인 스트리밍이 없습니다</Typography> :
       <Timeline position="alternate">
         {movies.map((movie) => (
             <TimelineItem key={movie.id}>
