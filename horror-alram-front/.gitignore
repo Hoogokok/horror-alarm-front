@@ -32,3 +32,6 @@ out/
 .vscode/
 node_modules/
 horror-alram-front/.env
+.vercel
+
+build/
