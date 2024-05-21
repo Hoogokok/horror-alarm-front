@@ -19,7 +19,7 @@ class AlarmStatus {
 
 async function handleInitialSubscription() {
   console.log("초기화 작업 시작")
-  const permission = await checkPermission();
+  const permission = checkPermission();
   if (permission === 'granted') {
     const token = await getToken(messaging);
     const result = await checkTokenTimeStamps(token);
@@ -42,13 +42,16 @@ async function getCheckedTopicsSubscribed(token) {
     ,
   }).then(r => r.json())
     .then((data) => {
-      const { topicContents } = data;
-      return topicContents;
+      const { value } = data;
+      return value.data;
+    })
+    .catch((error) => {
+      console.error("토픽 확인 실패", error);
     });
 }
 
 async function handleAlarmPermission() {
-  const permission = await checkPermission();
+  const permission = checkPermission();
   if (permission === 'granted') {
     alert('알람을 해제하려면 브라우저 설정에서 알람 권한을 해제해주세요.');
     return true;
@@ -69,9 +72,9 @@ async function handleAlarmPermission() {
   }
 }
 
-async function checkPermission() {
+function checkPermission() {
   try {
-    const permission = await Notification.permission;
+    const permission = Notification.permission;
     console.log('Notification permission:', permission);
     return permission;
   } catch (error) {
@@ -164,6 +167,7 @@ async function checkTokenTimeStamps(token) {
     })
     .catch((error) => {
       console.error("토큰 타임스탬프 확인 실패", error);
+      return { error: true };
     })
   if (!error && data) {
     console.log('토큰이 만료됨');
@@ -172,7 +176,6 @@ async function checkTokenTimeStamps(token) {
     const newTime = date.toISOString().split('T')[0];
     await deleteToken(messaging);
     const newToken = await getToken(messaging);
-    console.log('New token:', newToken);
     await fetch("https://horror-alarm-23.deno.dev/api/timestamp", {
       method: 'POST',
       headers: {
@@ -214,9 +217,9 @@ async function requestPermission() {
       body: JSON.stringify({ token: newToken, time: newTime })
     }).then(r => {
       console.log(r);
-      }).catch((error) => {
-        console.error("알람 권한 요청 실패", error);
-      }
+    }).catch((error) => {
+      console.error("알람 권한 요청 실패", error);
+    }
     );
   } catch (error) {
     alert('알람 권한을 허용해주세요.');
