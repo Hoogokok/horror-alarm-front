@@ -21,6 +21,8 @@ export default function Detail() {
     axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired/api/streaming/expired/detail/${id}`)
     .then((response) => {
       setMovie(response.data);
+    }).catch((error) => {
+      alert('서버 문제로 영화 정보를 가져오지 못했습니다. 다시 시도해주세요.');
     });
   }, [id]);
 
