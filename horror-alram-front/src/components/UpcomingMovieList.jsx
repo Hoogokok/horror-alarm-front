@@ -65,6 +65,5 @@ export function UpcomingMovieList() {
 
 }
 async function getUpcomingMovies() {
-  // return await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`);
-  return await axios.get('http://localhost:8081/api/upcoming')
+  return await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`);
 }
