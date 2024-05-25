@@ -31,7 +31,7 @@ async function handleInitialSubscription() {
 }
 
 async function getCheckedTopicsSubscribed(token) {
-  const url = `https://horror-alarm-23.deno.dev/api/subscriptions?token=${token}`;
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscriptions?token=${token}`;
   return await fetch(url, {
     method: 'GET',
     headers: {
@@ -119,7 +119,8 @@ async function subscribed(token, topic) {
    1. 토큰이 존재하는 지 찾는다
    2. 토큰이 존재하면 해당 토큰을 사용하여 토픽을 구독한다
    */
-  await fetch("https://horror-alarm-23.deno.dev/api/subscribe", {
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -134,7 +135,8 @@ async function subscribed(token, topic) {
 }
 
 async function unsubscribed(token, topic) {
-  await fetch("https://horror-alarm-23.deno.dev/api/unsubscribe", {
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -153,7 +155,7 @@ async function checkTokenTimeStamps(token) {
   2. 한 달이 지났으면 새로운 토큰을 생성하고 시간을 업데이트한다.
   3. 한 달이 지나지 않았으면 토큰을 그대로 사용한다.
    */
-  const url = `https://horror-alarm-23.deno.dev/api/timestamp?token=${token}`;
+  const url = `${process.env.REACT_APP_ALARM_API_URL}api/timestamp?token=${token}`;
   const { data, error } = fetch(url, {
     method: 'GET',
     headers: {
@@ -176,7 +178,7 @@ async function checkTokenTimeStamps(token) {
     const newTime = date.toISOString().split('T')[0];
     await deleteToken(messaging);
     const newToken = await getToken(messaging);
-    await fetch("https://horror-alarm-23.deno.dev/api/timestamp", {
+    await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/timestamp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -207,7 +209,7 @@ async function requestPermission() {
     await Notification.requestPermission();
     const { newToken, newTime } = await createTokenAndTime();
     console.log("Permission granted");
-    await fetch("https://horror-alarm-23.deno.dev/api/permission", {
+    await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/permission`, {
       method: 'POST',
       mode: 'cors',
       headers: {
