@@ -119,7 +119,8 @@ async function subscribed(token, topic) {
    1. 토큰이 존재하는 지 찾는다
    2. 토큰이 존재하면 해당 토큰을 사용하여 토픽을 구독한다
    */
-  await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`, {
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -134,7 +135,8 @@ async function subscribed(token, topic) {
 }
 
 async function unsubscribed(token, topic) {
-  await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`, {
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
