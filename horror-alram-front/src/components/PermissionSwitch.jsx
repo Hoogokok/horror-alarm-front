@@ -10,7 +10,7 @@ import {
   handleInitialSubscription
 } from "../functions/messaging";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { styled } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
