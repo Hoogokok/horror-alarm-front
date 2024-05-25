@@ -33,7 +33,15 @@ export function UpcomingMovieList() {
 
   return (
     <Container>
-      <ListSubheader sx={{ fontSize: '1.5rem' }}>개봉 예정 영화</ListSubheader>
+      <ListSubheader sx={
+        {
+          backgroundColor: '#2F4F4F',
+          textAlign: 'center',
+          color: 'white',
+        }
+      }>
+
+      개봉 예정 영화</ ListSubheader>
       <ImageList className="image-list" sx={{
         width: '100%',
         height: '100%',

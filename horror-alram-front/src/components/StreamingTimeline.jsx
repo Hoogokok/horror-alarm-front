@@ -9,6 +9,11 @@ import axios from 'axios';
 import {useState, useEffect} from 'react';
 import Typography from '@mui/material/Typography';
 import {Link} from 'react-router-dom';
+import { styled } from '@material-ui/core/styles';
+
+const Div = styled('div')({
+  color: 'white',
+});
 
 export function StreamingTimeline() {
   const [movies, setMovies] = useState([]);
@@ -24,7 +29,7 @@ export function StreamingTimeline() {
 
   return (
     movies.length === 0 ? 
-      <Typography>종료 예정인 스트리밍이 없습니다</Typography> :
+      <Div >종료 예정인 스트리밍이 없습니다</Div> :
       <Timeline position="alternate">
         {movies.map((movie) => (
             <TimelineItem key={movie.id}>
