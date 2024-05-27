@@ -43,7 +43,7 @@ export default function Detail() {
       }>
         <Grid container spacing={2}>
           <Grid item>
-            <Img src={"https://image.tmdb.org/t/p/w500" + movie.posterPath} alt={movie.title}/>
+            <Img src={`${process.env.REACT_APP_POSTER_API_URL}` + movie.posterPath} alt={movie.title}/>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>

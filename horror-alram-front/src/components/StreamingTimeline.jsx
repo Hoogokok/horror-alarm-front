@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 
 const Div = styled('div')({
+  margin: 10,
   color: 'white',
 });
 

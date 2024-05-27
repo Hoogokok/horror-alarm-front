@@ -56,6 +56,7 @@ export default function MainTabs() {
             value={value} onChange={handleChange}
             indicatorColor="secondary"
             textColor="white"
+            centered
         >
           <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming"/>
           <Tab label="알람 설정" value="alarm" component={Link} to="/alarm"/>
