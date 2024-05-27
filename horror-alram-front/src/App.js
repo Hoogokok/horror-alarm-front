@@ -1,6 +1,7 @@
 import { BrowserRouter, } from 'react-router-dom'
 import MainTabs from "./components/MainTab.jsx";
 import { createGlobalStyle } from 'styled-components';
+import Footer from './components/Footer.jsx';
 
 
 const GlobalStyle = createGlobalStyle`
@@ -14,6 +15,7 @@ function App() {
     <BrowserRouter>
       <GlobalStyle />
       <MainTabs />
+      <Footer />
     </BrowserRouter>
   );
 }
