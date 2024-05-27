@@ -39,9 +39,7 @@ export function UpcomingMovieList() {
           textAlign: 'center',
           color: 'white',
         }
-      }>
-
-      개봉 예정 영화</ ListSubheader>
+      }> 개봉 예정 영화</ ListSubheader>
       <ImageList className="image-list" sx={{
         width: '100%',
         height: '100%',
@@ -51,9 +49,10 @@ export function UpcomingMovieList() {
         overflowY: isMobile ? 'auto' : 'initial', // 세로 스크롤 설정
         gap: 10,
       }}>
+        {movies.length === 0 && <div>개봉 예정 영화가 없습니다.</div>}
         {movies.length > 0 && movies.map((movie) => (
           <ImageListItem className='image-item' key={movie.id} onClick={() => handleClickOpen(movie)} sx={{ height: 150 }}>
-            <img src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`} alt={movie.title} />
+            <img src={`${process.env.REACT_APP_POSTER_API_URL}${movie.posterPath}`} alt={movie.title} />
             <ImageListItemBar
               title={movie.title}
               subtitle={movie.releaseDate}
