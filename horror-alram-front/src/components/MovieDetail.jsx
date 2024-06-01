@@ -18,7 +18,7 @@ export default function Detail() {
   const {id} = useParams();
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired/api/streaming/expired/detail/${id}`)
+    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired/detail/${id}`)
     .then((response) => {
       setMovie(response.data);
     }).catch((error) => {
@@ -43,8 +43,7 @@ export default function Detail() {
       }>
         <Grid container spacing={2}>
           <Grid item>
-            <Img src={`${process.env.REACT_APP_POSTER_API_URL}` + movie.posterPath} alt={movie.title}/>
-          </Grid>
+          <img src={`${process.env.REACT_APP_POSTER_API_URL}${movie.posterPath}`} alt={movie.title} />          </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
