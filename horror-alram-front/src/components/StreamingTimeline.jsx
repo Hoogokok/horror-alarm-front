@@ -10,7 +10,29 @@ import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2F4F4F',
+    },
+    secondary: {
+      main: '#CD5C5C',
+    },
+  },
+  components: {
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#2F4F4F',
+          textAlign: 'center',
+          color: '#F8F8FF',
+        },
+      },
+    },
+  },
+});
 const Div = styled('div')({
   margin: 10,
   color: 'white',
@@ -31,23 +53,25 @@ export function StreamingTimeline() {
   return (
     movies.length === 0 ?
       <Div >종료 예정인 스트리밍이 없습니다</Div> :
+      <ThemeProvider theme={theme}>
       <Timeline position="alternate">
         {movies.map((movie) => (
           <TimelineItem key={movie.id}>
             <TimelineSeparator>
-              <TimelineDot color="primary" />
+              <TimelineDot color="secondary" />
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
               <Link to={`/movie/${movie.id}`}
-                style={{ textDecoration: 'none', color: 'black' }}
+                style={{ textDecoration: 'none', color: 'white' }}
               >
                 <Typography>{movie.title}</Typography>
               </Link>
-              <Typography>{movie.expiredDate}</Typography>
+              <Typography color={"white"}>{movie.expiredDate}</Typography>
             </TimelineContent>
           </TimelineItem>
         ))}
       </Timeline>
+      </ThemeProvider>
   );
 }
