@@ -45,6 +45,7 @@ export default function MainTabs({ upcomingMovies}) {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [value, setValue] = useState(getTabValue(path));
 
+
   useEffect(() => {
     window.history.replaceState(null, '', `/${getTabPath(value)}`);
   }, [value]);
@@ -78,7 +79,8 @@ export default function MainTabs({ upcomingMovies}) {
         </ThemeProvider>
         <Routes>
           <Route path="upcoming" element={<UpcomingMovieList
-              imageList={<UpcomingImageList upcomingMovies={upcomingMovies} handleOpen={handleOpen}/>}
+              imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
+              handleOpen={handleOpen}/>}
               movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
                                                         selectedMovie={selectedMovie}/>}
           />}/>
