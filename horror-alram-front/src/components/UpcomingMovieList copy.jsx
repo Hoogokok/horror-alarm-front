@@ -1,6 +1,5 @@
 import Container from '@mui/material/Container';
-import {ListSubheader } from '@mui/material';
-
+import { ListSubheader } from '@mui/material';
 
 export function UpcomingMovieList({ imageList, movieOverViewDialog }) {
 
@@ -17,4 +16,5 @@ export function UpcomingMovieList({ imageList, movieOverViewDialog }) {
       {movieOverViewDialog}
     </Container>
   );
+
 }
