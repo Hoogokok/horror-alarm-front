@@ -9,6 +9,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import {PermissionSwitch} from "./PermissionSwitch"
 import {UpcomingMovieList} from "./UpcomingMovieList"
+import  UpcomingImageList from './ImageList';
+import MovieOverViewDialog  from './MovieOverViewDialog';
 import {StreamingTimeline} from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import {useEffect, useState} from "react";
@@ -36,9 +38,11 @@ const theme = createTheme({
   },
 });
 
-export default function MainTabs() {
+export default function MainTabs({ upcomingMovies}) {
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
+  const [open, setOpen] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const [value, setValue] = useState(getTabValue(path));
 
   useEffect(() => {
@@ -47,6 +51,14 @@ export default function MainTabs() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const handleOpen = (movie) => {
+    setSelectedMovie(movie);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -65,7 +77,11 @@ export default function MainTabs() {
         </Tabs>
         </ThemeProvider>
         <Routes>
-          <Route path="upcoming" element={<UpcomingMovieList/>}/>
+          <Route path="upcoming" element={<UpcomingMovieList
+              imageList={<UpcomingImageList upcomingMovies={upcomingMovies} handleOpen={handleOpen}/>}
+              movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
+                                                        selectedMovie={selectedMovie}/>}
+          />}/>
           <Route path="alarm" element={<PermissionSwitch/>}/>
           <Route path="streamingexpired" element={<StreamingTimeline/>}/>
           <Route path="movie/:id" element={<Detail/>}/>
