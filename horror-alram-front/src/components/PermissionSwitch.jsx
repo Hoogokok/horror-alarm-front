@@ -11,7 +11,7 @@ import {
 } from "../functions/messaging";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
-
+import { useMediaQuery } from '@mui/material';
 const theme = createTheme({
   palette: {
     primary: {
@@ -22,6 +22,7 @@ const theme = createTheme({
 
 const LabelText = styled('span')({
   color: 'white', // 원하는 색깔로 변경
+  textAlign: 'center',
 });
 
 
@@ -29,6 +30,7 @@ export function PermissionSwitch() {
   const [checkedPermission, setCheckedPermission] = useState(false);
   const [checkedUpcomingMovie, setCheckedUpcomingMovie] = useState(false);
   const [checkedNetflix, setCheckedNetflix] = useState(false);
+  const isMobile = useMediaQuery('(min-width:756px)');
 
   const handleAlarm = useCallback(async () => {
     await handleAlarmPermission().then(result => {
@@ -68,7 +70,14 @@ export function PermissionSwitch() {
   }, [checkedPermission, checkedUpcomingMovie, checkedNetflix, fetchData]);
 
   return (<Container>
-    <FormGroup>
+    <FormGroup sx={
+      {
+        mt: '20px',
+        color: 'white',
+        textAlign: 'center',
+        mx: isMobile ? '300px' : '10px',
+      }
+    }>
       <ThemeProvider theme={theme}>
         <AlarmPermissionSwitch checkedPermission={checkedPermission}
           handleAlarmPermission={handleAlarm} />

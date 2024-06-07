@@ -7,13 +7,13 @@ import {
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import {PermissionSwitch} from "./PermissionSwitch"
-import {UpcomingMovieList} from "./UpcomingMovieList"
-import  UpcomingImageList from './ImageList';
-import MovieOverViewDialog  from './MovieOverViewDialog';
-import {StreamingTimeline} from "./StreamingTimeline"
+import { PermissionSwitch } from "./PermissionSwitch"
+import { UpcomingMovieList } from "./UpcomingMovieList"
+import UpcomingImageList from './ImageList';
+import MovieOverViewDialog from './MovieOverViewDialog';
+import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -38,7 +38,7 @@ const theme = createTheme({
   },
 });
 
-export default function MainTabs({ upcomingMovies}) {
+export default function MainTabs({ upcomingMovies, streamingMovies }) {
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
   const [open, setOpen] = useState(false);
@@ -63,32 +63,34 @@ export default function MainTabs({ upcomingMovies}) {
   };
 
   return (
-      <Container>
-        <ThemeProvider theme={theme}>
-        <Tabs 
-            value={value} onChange={handleChange}
-            indicatorColor="secondary"
-            textColor="white"
-            centered
+    <Container>
+      <ThemeProvider theme={theme}>
+        <Tabs
+          value={value} onChange={handleChange}
+          indicatorColor="secondary"
+          textColor="white"
+          centered
         >
-          <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming"/>
-          <Tab label="알람 설정" value="alarm" component={Link} to="/alarm"/>
+          <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming" />
+          <Tab label="알람 설정" value="alarm" component={Link} to="/alarm" />
           <Tab label="스트리밍 종료 예정" value="streamingexpired" component={Link}
-               to="/streamingexpired"/>
+            to="/streamingexpired" />
         </Tabs>
-        </ThemeProvider>
-        <Routes>
-          <Route path="upcoming" element={<UpcomingMovieList
-              imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
-              handleOpen={handleOpen}/>}
-              movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
-                                                        selectedMovie={selectedMovie}/>}
-          />}/>
-          <Route path="alarm" element={<PermissionSwitch/>}/>
-          <Route path="streamingexpired" element={<StreamingTimeline/>}/>
-          <Route path="movie/:id" element={<Detail/>}/>
-        </Routes>
-      </Container>
+      </ThemeProvider>
+      <Routes>
+        <Route path="upcoming" element={<UpcomingMovieList
+          imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
+            handleOpen={handleOpen} />}
+          movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
+            selectedMovie={selectedMovie} />}
+        />} />
+        <Route path="alarm" element={<PermissionSwitch />} />
+        <Route path="streamingexpired" element={<StreamingTimeline
+          movies={streamingMovies.movie} error={streamingMovies.error}
+        />} />
+        <Route path="movie/:id" element={<Detail />} />
+      </Routes>
+    </Container>
   );
 }
 
