@@ -2,7 +2,7 @@ import axios from 'axios';
 
 class ReleasingMovies {
     constructor() {
-        this.releasingMovies = [];
+        this.movies = [];
         this.error = null;
     }
 }
@@ -11,7 +11,7 @@ export default async function getReleasingMovies() {
     try {
         const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`);
         const releasingMovies = new ReleasingMovies();
-        releasingMovies.releasingMovies = response.data;
+        releasingMovies.movies = response.data;
         return releasingMovies;
     } catch (error) {
         const releasingMovies = new ReleasingMovies();
