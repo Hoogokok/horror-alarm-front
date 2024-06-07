@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { PermissionSwitch } from "./PermissionSwitch"
-import { UpcomingMovieList } from "./UpcomingMovieList"
+import { MovieList } from "./MovieList"
 import UpcomingImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
 import { StreamingTimeline } from "./StreamingTimeline"
@@ -38,7 +38,7 @@ const theme = createTheme({
   },
 });
 
-export default function MainTabs({ upcomingMovies, streamingMovies }) {
+export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies }) {
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
   const [open, setOpen] = useState(false);
@@ -75,10 +75,11 @@ export default function MainTabs({ upcomingMovies, streamingMovies }) {
           <Tab label="알람 설정" value="alarm" component={Link} to="/alarm" />
           <Tab label="스트리밍 종료 예정" value="streamingexpired" component={Link}
             to="/streamingexpired" />
+          <Tab label="개봉 " value="releasing" component={Link} to="/releasing" />
         </Tabs>
       </ThemeProvider>
       <Routes>
-        <Route path="upcoming" element={<UpcomingMovieList
+        <Route path="upcoming" element={<MovieList
           imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
             handleOpen={handleOpen} guideText={"개봉 예정 영화가 없습니다."} />}
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}

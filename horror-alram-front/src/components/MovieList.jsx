@@ -1,8 +1,8 @@
 import Container from '@mui/material/Container';
-import {ListSubheader } from '@mui/material';
+import { ListSubheader } from '@mui/material';
 
 
-export function UpcomingMovieList({ imageList, movieOverViewDialog, header}) {
+export function MovieList({ imageList, movieOverViewDialog, header }) {
 
   return (
     <Container>
