@@ -8,6 +8,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import {ListSubheader } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -40,6 +41,13 @@ export function StreamingTimeline({ movies, error }) {
 
   return (
     <ThemeProvider theme={theme}>
+      <ListSubheader sx={
+        {
+          backgroundColor: '#2F4F4F',
+          textAlign: 'center',
+          color: 'white',
+        }
+      }> 스트리밍 종료 예정 영화</ ListSubheader>
       {error && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
       {!error && movies.length === 0 && <Div>개봉 예정 중인 영화가 없습니다.</Div>}
       {!error && movies.length > 0 && <Timeline position="alternate">
