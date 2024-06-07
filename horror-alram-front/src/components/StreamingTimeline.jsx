@@ -5,8 +5,6 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -38,23 +36,13 @@ const Div = styled('div')({
   color: 'white',
 });
 
-export function StreamingTimeline() {
-  const [movies, setMovies] = useState([]);
-
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`)
-      .then((response) => {
-        setMovies(response.data.expiredMovies);
-      }).catch((error) => {
-        alert('서버 문제로 영화 정보를 가져오지 못했습니다. 다시 시도해주세요.');
-      });
-  }, []);
+export function StreamingTimeline({ movies, error }) {
 
   return (
-    movies.length === 0 ?
-      <Div >종료 예정인 스트리밍이 없습니다</Div> :
-      <ThemeProvider theme={theme}>
-      <Timeline position="alternate">
+    <ThemeProvider theme={theme}>
+      {error && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
+      {!error && movies.length === 0 && <Div>개봉 예정 중인 영화가 없습니다.</Div>}
+      {!error && movies.length > 0 && <Timeline position="alternate">
         {movies.map((movie) => (
           <TimelineItem key={movie.id}>
             <TimelineSeparator>
@@ -71,7 +59,7 @@ export function StreamingTimeline() {
             </TimelineContent>
           </TimelineItem>
         ))}
-      </Timeline>
-      </ThemeProvider>
+      </Timeline>}
+    </ThemeProvider>
   );
 }
