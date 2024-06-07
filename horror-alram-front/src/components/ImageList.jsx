@@ -2,7 +2,7 @@ import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export default function UpcomingImageList({ movies, error, handleOpen, guideText }) {
+export default function MovieImageList({ movies, error, handleOpen, guideText }) {
     const isMobile = useMediaQuery('(min-width:756px)');
     const handleClickOpen = (movie) => {
         handleOpen(movie);

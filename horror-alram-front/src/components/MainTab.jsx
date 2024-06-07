@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { PermissionSwitch } from "./PermissionSwitch"
 import { MovieList } from "./MovieList"
-import UpcomingImageList from './ImageList';
+import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
 import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
@@ -80,11 +80,12 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
       </ThemeProvider>
       <Routes>
         <Route path="upcoming" element={<MovieList
-          imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
+          imageList={<MovieImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
             handleOpen={handleOpen} guideText={"개봉 예정 영화가 없습니다."} />}
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
+
         <Route path="alarm" element={<PermissionSwitch />} />
         <Route path="streamingexpired" element={<StreamingTimeline
           movies={streamingMovies.movie} error={streamingMovies.error}
