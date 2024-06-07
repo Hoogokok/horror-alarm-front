@@ -3,8 +3,6 @@ import { useMediaQuery } from '@mui/material';
 
 export default function UpcomingImageList({ movies, error, handleOpen }) {
     const isMobile = useMediaQuery('(min-width:756px)');
-    console.log(movies);
-    console.log(error);
     const handleClickOpen = (movie) => {
         handleOpen(movie);
     }
