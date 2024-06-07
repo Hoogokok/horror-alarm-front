@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Container from '@mui/material/Container';
 import { styled } from '@mui/material/styles';
 
 const Img = styled('img')({
