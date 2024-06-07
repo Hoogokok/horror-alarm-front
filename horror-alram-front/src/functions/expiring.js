@@ -7,7 +7,7 @@ class ExpiringMovieResponse {
     }
 }
 
-async function getExpiringMovies() {
+export default async function getExpiringMovies() {
     try {
         const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/expiring`);
         const expiringMovies = new ExpiringMovieResponse();
