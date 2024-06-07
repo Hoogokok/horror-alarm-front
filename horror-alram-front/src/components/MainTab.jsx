@@ -72,23 +72,29 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           centered
         >
           <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming" />
+          <Tab label="개봉중" value="releasing" component={Link} to="/releasing" />
           <Tab label="알람 설정" value="alarm" component={Link} to="/alarm" />
           <Tab label="스트리밍 종료 예정" value="streamingexpired" component={Link}
             to="/streamingexpired" />
-          <Tab label="개봉 " value="releasing" component={Link} to="/releasing" />
         </Tabs>
       </ThemeProvider>
       <Routes>
         <Route path="upcoming" element={<MovieList
-          imageList={<MovieImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
+          imageList={<MovieImageList movies={upcomingMovies.movies} error={upcomingMovies.error}
             handleOpen={handleOpen} guideText={"개봉 예정 영화가 없습니다."} />}
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
 
+        <Route path="releasing" element={<MovieList
+          imageList={<MovieImageList movies={releasingMovies.movies} error={releasingMovies.error}
+            handleOpen={handleOpen} guideText={"개봉 중인 영화가 없습니다."} />}
+          movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
+            selectedMovie={selectedMovie} />}
+        />} />
         <Route path="alarm" element={<PermissionSwitch />} />
         <Route path="streamingexpired" element={<StreamingTimeline
-          movies={streamingMovies.movie} error={streamingMovies.error}
+          movies={streamingMovies.movies} error={streamingMovies.error}
         />} />
         <Route path="movie/:id" element={<Detail />} />
       </Routes>
@@ -103,9 +109,10 @@ function getTabValue(path) {
     return 'alarm';
   } else if (path === 'streamingexpired') {
     return 'streamingexpired';
-  } else {
-    return 'upcoming';
+  } else if (path === 'releasing') {
+    return 'releasing';
   }
+  return 'upcoming';
 }
 
 function getTabPath(value) {
@@ -115,7 +122,8 @@ function getTabPath(value) {
     return 'alarm';
   } else if (value === 'streamingexpired') {
     return 'streamingexpired';
-  } else {
-    return 'upcoming';
+  } else if (value === 'releasing') {
+    return 'releasing';
   }
+  return 'upcoming';
 }
