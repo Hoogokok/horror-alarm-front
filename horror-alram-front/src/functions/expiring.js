@@ -2,16 +2,16 @@ import axios from 'axios';
 
 class ExpiringMovieResponse {
     constructor() {
-        this.expiringMovies = [];
+        this.movies = [];
         this.error = null;
     }
 }
 
 export default async function getExpiringMovies() {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/expiring`);
+        const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`);
         const expiringMovies = new ExpiringMovieResponse();
-        expiringMovies.expiringMovies = response.data;
+        expiringMovies.movies = response.data;
         return expiringMovies;
     } catch (error) {
         const expiringMovies = new ExpiringMovieResponse();
