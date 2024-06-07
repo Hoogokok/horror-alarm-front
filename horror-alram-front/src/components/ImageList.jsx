@@ -2,7 +2,7 @@ import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export default function UpcomingImageList({ movies, error, handleOpen }) {
+export default function UpcomingImageList({ movies, error, handleOpen, guideText }) {
     const isMobile = useMediaQuery('(min-width:756px)');
     const handleClickOpen = (movie) => {
         handleOpen(movie);
@@ -25,7 +25,7 @@ export default function UpcomingImageList({ movies, error, handleOpen }) {
             gap: 10,
         }}>
             {error && <Div>서버 문제로 영화 정보를 가져오지 못했습니다. 다시 시도해주세요.</Div>}
-            {!error && movies.length === 0 && <Div>개봉 예정 영화가 없습니다.</Div>}
+            {!error && movies.length === 0 && <Div>{guideText}</Div>}
             {!error && movies.length > 0 && movies.map((movie) => (
                 <ImageListItem className='image-item' key={movie.id} onClick={() => handleClickOpen(movie)} sx={{ height: 150 }}>
                     <img src={`${process.env.REACT_APP_POSTER_API_URL}${movie.posterPath}`} alt={movie.title} />

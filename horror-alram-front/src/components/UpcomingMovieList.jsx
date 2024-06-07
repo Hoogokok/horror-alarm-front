@@ -2,7 +2,7 @@ import Container from '@mui/material/Container';
 import {ListSubheader } from '@mui/material';
 
 
-export function UpcomingMovieList({ imageList, movieOverViewDialog }) {
+export function UpcomingMovieList({ imageList, movieOverViewDialog, header}) {
 
   return (
     <Container>
@@ -12,7 +12,7 @@ export function UpcomingMovieList({ imageList, movieOverViewDialog }) {
           textAlign: 'center',
           color: 'white',
         }
-      }> 개봉 예정 영화</ ListSubheader>
+      }> {header}</ ListSubheader>
       {imageList}
       {movieOverViewDialog}
     </Container>

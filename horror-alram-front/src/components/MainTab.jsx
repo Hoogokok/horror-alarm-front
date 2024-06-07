@@ -80,7 +80,7 @@ export default function MainTabs({ upcomingMovies, streamingMovies }) {
       <Routes>
         <Route path="upcoming" element={<UpcomingMovieList
           imageList={<UpcomingImageList movies={upcomingMovies.movie} error={upcomingMovies.error}
-            handleOpen={handleOpen} />}
+            handleOpen={handleOpen} guideText={"개봉 예정 영화가 없습니다."} />}
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
