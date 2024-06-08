@@ -5,7 +5,9 @@ import Footer from './components/Footer.jsx';
 import getUpcomingMovies from './functions/upcoming.js';
 import getExpiringMovies from './functions/expiring.js';
 import getReleasingMovies from './functions/releasing.js';
-
+import {
+  handleInitialSubscription
+} from "./functions/messaging.js";
 const GlobalStyle = createGlobalStyle`
   body {
     background: #2F4F4F	;
@@ -15,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
 const upcomingMovies = await getUpcomingMovies();
 const expiringMovies = await getExpiringMovies();
 const releasingMovies = await getReleasingMovies();
+const intialSubscription = await handleInitialSubscription();
 
 function App() {
   return (
@@ -24,6 +27,7 @@ function App() {
         upcomingMovies={upcomingMovies}
         streamingMovies={expiringMovies}
         releasingMovies={releasingMovies}
+        intialSubscription={intialSubscription}
       />
       <Footer />
     </BrowserRouter>
