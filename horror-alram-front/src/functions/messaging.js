@@ -8,8 +8,9 @@ const app = fcm(FIREBASE_CONFIG);
 const messaging = getMessaging(app);
 
 class AlarmStatus {
-  permission = false;
+  permission = "default" || "granted" || "denied";
   subscribe = [false, false];
+  error = null;
 
   constructor(permission, subscribe) {
     this.permission = permission;
@@ -17,15 +18,30 @@ class AlarmStatus {
   }
 }
 
+class SubscriptionResponse {
+  status = "subscribe" || "unsubscribe" || "error";
+  error = null;
+
+  constructor({ status, error }) {
+    this.status = status;
+    this.error = error;
+  }
+}
+
+
 async function handleInitialSubscription() {
   console.log("초기화 작업 시작")
   const permission = checkPermission();
   if (permission === 'granted') {
-    const token = await getToken(messaging);
-    const result = await checkTokenTimeStamps(token);
-    const topicContents = await getCheckedTopicsSubscribed(result.newToken);
-    return new AlarmStatus(true, [topicContents.includes('upcoming_movie'),
-    topicContents.includes('netflix_expiring')]);
+    try {
+      const token = await getToken(messaging);
+      const result = await checkTokenTimeStamps(token);
+      const topicContents = await getCheckedTopicsSubscribed(result.newToken);
+      return new AlarmStatus(permission, [topicContents.includes('upcoming_movie'), topicContents.includes('netflix_expiring')]);
+    } catch (error) {
+      console.error("초기 구독 확인 실패", error);
+      return new AlarmStatus(permission, [false, false], error);
+    }
   }
   return new AlarmStatus(false, [false, false]);
 }
@@ -47,6 +63,7 @@ async function getCheckedTopicsSubscribed(token) {
     })
     .catch((error) => {
       console.error("토픽 확인 실패", error);
+      return [];
     });
 }
 
@@ -88,14 +105,14 @@ async function handleUpcomingMovieSubscribe(checkedPermission,
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkedSubscribe) {
-      await subscribed(token, 'upcoming_movie');
-      return true;
+      return await subscribed(token, 'upcoming_movie');
+      
     } else {
-      await unsubscribed(token, 'upcoming_movie');
-      return false;
+      return await unsubscribed(token, 'upcoming_movie');
     }
   } else {
     alert('알람 권한을 허용해주세요.');
+    return checkedPermission;
   }
 }
 
@@ -103,14 +120,14 @@ async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkNetflix) {
-      await subscribed(token, 'netflix_expiring');
-      return true
+      return await subscribed(token, 'netflix_expiring');
+      
     } else {
-      await unsubscribed(token, 'netflix_expiring');
-      return false;
+      return await unsubscribed(token, 'netflix_expiring');
     }
   } else {
     alert('알람 권한을 허용해주세요.');
+    return checkPermission;
   }
 }
 
@@ -120,7 +137,7 @@ async function subscribed(token, topic) {
    2. 토큰이 존재하면 해당 토큰을 사용하여 토픽을 구독한다
    */
   const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
-  await fetch(url, {
+  return await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -129,14 +146,16 @@ async function subscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
+    return new SubscriptionResponse({ status: "subscribe" });
   }).catch((error) => {
     console.error("구독 실패", error);
+    return new SubscriptionResponse({ status: "error" , error: error });
   });
 }
 
 async function unsubscribed(token, topic) {
-  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
-  await fetch(url, {
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/unsubscribe`;
+  return await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -144,8 +163,12 @@ async function unsubscribed(token, topic) {
     },
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
-  }).catch((error) => {
+  }).then(r => {
+    return new SubscriptionResponse({ status: "unsubscribe" });
+  }
+  ).catch((error) => {
     console.error("구독 해제 실패", error);
+    return new SubscriptionResponse({ status: "error", error: error });
   });
 }
 
@@ -155,7 +178,7 @@ async function checkTokenTimeStamps(token) {
   2. 한 달이 지났으면 새로운 토큰을 생성하고 시간을 업데이트한다.
   3. 한 달이 지나지 않았으면 토큰을 그대로 사용한다.
    */
-  const url = `${process.env.REACT_APP_ALARM_API_URL}api/timestamp?token=${token}`;
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/timestamp?token=${token}`;
   const { data, error } = fetch(url, {
     method: 'GET',
     headers: {

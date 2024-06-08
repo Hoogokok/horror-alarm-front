@@ -7,7 +7,8 @@ import {
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { PermissionSwitch } from "./PermissionSwitch"
+import { AlramSwitchs } from "./AlramSwitchs"
+import AlramSwitch from "./AlramSwitch"
 import { MovieList } from "./MovieList"
 import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
@@ -15,6 +16,12 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+  handleAlarmPermission,
+  handleUpcomingMovieSubscribe,
+  handleNetflixSubscribe,
+  handleInitialSubscription
+} from "../functions/messaging";
 
 const theme = createTheme({
   palette: {
@@ -38,12 +45,23 @@ const theme = createTheme({
   },
 });
 
+const intialSubscription = await handleInitialSubscription();
+const checkedPermission = intialSubscription.permission;
+const checkedUpcomingMovie = intialSubscription.subscribe[0];
+const checkedNetflix = intialSubscription.subscribe[1];
+
 export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies }) {
+  // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
+  const [value, setValue] = useState(getTabValue(path));
+  // 영화 상세 정보 다이얼로그에 쓰이는 state
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [value, setValue] = useState(getTabValue(path));
+  // 알람 설정에 쓰이는 state
+  const [permission, setPermission] = useState(checkedPermission === "granted");
+  const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
+  const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);
 
 
   useEffect(() => {
@@ -61,6 +79,32 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   const handleClose = () => {
     setOpen(false);
   };
+
+  const changeAlarmPermission = async () => {
+    const result = await handleAlarmPermission();
+    setPermission((prev => {
+      if (result) {
+        return !prev;
+      }
+      return prev;
+    }
+    ));
+  };
+  const changeUpcomingMovieSubscribe = async () => {
+    const result = await handleUpcomingMovieSubscribe(permission, subscribeUpcoming);
+    setSubscribeUpcoming((prev => {
+      return result.status === 'subscribe';
+    }
+    ));
+  };
+  const changeeNetflixSubscribe = async () => {
+    const result = await handleNetflixSubscribe(permission, subscribeNetflix);
+    setSubscribeNetflix((prev => {
+      return result.status === 'subscribe';
+    }
+    ));
+  };
+
 
   return (
     <Container>
@@ -92,7 +136,20 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-        <Route path="alarm" element={<PermissionSwitch />} />
+        <Route path="alarm" element={<AlramSwitchs
+          alarmPermissionSwitch={<AlramSwitch checked={permission}
+            handleChange={changeAlarmPermission}
+            message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
+          />}
+          upcomingSubscriptionSwitch={<AlramSwitch checked={subscribeUpcoming}
+            handleChange={changeUpcomingMovieSubscribe}
+            message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }}
+          />}
+          netflixSubscriptionSwitch={<AlramSwitch checked={subscribeNetflix}
+            handleChange={changeeNetflixSubscribe}
+            message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
+          />}
+        />} />
         <Route path="streamingexpired" element={<StreamingTimeline
           movies={streamingMovies.movies} error={streamingMovies.error}
         />} />
