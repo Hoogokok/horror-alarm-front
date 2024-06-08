@@ -128,6 +128,7 @@ async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
     }
   } else {
     alert('알람 권한을 허용해주세요.');
+    return checkPermission;
   }
 }
 
@@ -146,8 +147,10 @@ async function subscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
+    return new SubscriptionResponse({ status: "success" });
   }).catch((error) => {
     console.error("구독 실패", error);
+    return new SubscriptionResponse({ status: "error" , error: error });
   });
 }
 
@@ -161,8 +164,12 @@ async function unsubscribed(token, topic) {
     },
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
-  }).catch((error) => {
+  }).then(r => {
+    return new SubscriptionResponse({ status: "success" });
+  }
+  ).catch((error) => {
     console.error("구독 해제 실패", error);
+    return new SubscriptionResponse({ status: "error", error: error });
   });
 }
 
