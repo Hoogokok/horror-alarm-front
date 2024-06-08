@@ -155,7 +155,7 @@ async function checkTokenTimeStamps(token) {
   2. 한 달이 지났으면 새로운 토큰을 생성하고 시간을 업데이트한다.
   3. 한 달이 지나지 않았으면 토큰을 그대로 사용한다.
    */
-  const url = `${process.env.REACT_APP_ALARM_API_URL}api/timestamp?token=${token}`;
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/timestamp?token=${token}`;
   const { data, error } = fetch(url, {
     method: 'GET',
     headers: {
