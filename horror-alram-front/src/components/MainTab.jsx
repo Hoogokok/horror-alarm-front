@@ -90,7 +90,6 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
       setSubscribeUpcoming((result) => (result.status === 'success'));
     });
   };
-  
   const changeeNetflixSubscribe = async () => {
     await handleNetflixSubscribe(permission, subscribeNetflix).then(result => {
       setSubscribeNetflix((result) => (result.status === 'success'));
@@ -128,7 +127,20 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-        <Route path="alarm" element={<AlramSwitchs />} />
+        <Route path="alarm" element={<AlramSwitchs
+           alarmPermissionSwitch={<AlramSwitch checked={permission}
+           handleChange={changeAlarmPermission}
+           message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
+         />}
+          upcomingSubscriptionSwitch={<AlramSwitch checked={subscribeUpcoming}
+            handleChange={changeUpcomingMovieSubscribe}
+            message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }}
+          />}
+          netflixSubscriptionSwitch={<AlramSwitch checked={subscribeNetflix}
+            handleChange={changeeNetflixSubscribe}
+            message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
+          />}
+        />} />
         <Route path="streamingexpired" element={<StreamingTimeline
           movies={streamingMovies.movies} error={streamingMovies.error}
         />} />
