@@ -7,7 +7,7 @@ import {
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { PermissionSwitch } from "./PermissionSwitch"
+import { AlramSwitchs } from "./AlramSwitchs"
 import { MovieList } from "./MovieList"
 import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
@@ -92,7 +92,7 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-        <Route path="alarm" element={<PermissionSwitch />} />
+        <Route path="alarm" element={<AlramSwitchs />} />
         <Route path="streamingexpired" element={<StreamingTimeline
           movies={streamingMovies.movies} error={streamingMovies.error}
         />} />
