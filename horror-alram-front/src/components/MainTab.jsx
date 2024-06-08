@@ -128,10 +128,10 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
             selectedMovie={selectedMovie} />}
         />} />
         <Route path="alarm" element={<AlramSwitchs
-           alarmPermissionSwitch={<AlramSwitch checked={permission}
-           handleChange={changeAlarmPermission}
-           message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
-         />}
+          alarmPermissionSwitch={<AlramSwitch checked={permission}
+            handleChange={changeAlarmPermission}
+            message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
+          />}
           upcomingSubscriptionSwitch={<AlramSwitch checked={subscribeUpcoming}
             handleChange={changeUpcomingMovieSubscribe}
             message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }}
