@@ -62,6 +62,7 @@ async function getCheckedTopicsSubscribed(token) {
     })
     .catch((error) => {
       console.error("토픽 확인 실패", error);
+      return [];
     });
 }
 
