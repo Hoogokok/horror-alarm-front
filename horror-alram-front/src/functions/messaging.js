@@ -155,7 +155,7 @@ async function subscribed(token, topic) {
 }
 
 async function unsubscribed(token, topic) {
-  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscribe`;
+  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/unsubscribe`;
   await fetch(url, {
     method: 'POST',
     headers: {
