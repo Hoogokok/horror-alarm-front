@@ -117,7 +117,7 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
         >
           <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming" />
           <Tab label="개봉중" value="releasing" component={Link} to="/releasing" />
-          <Tab label="알람 설정" value="alarm" component={Link} to="/alarm" />
+          <Tab label="알람 설정" value="alram" component={Link} to="/alram" />
           <Tab label="스트리밍 종료 예정" value="streamingexpired" component={Link}
             to="/streamingexpired" />
         </Tabs>
@@ -136,7 +136,7 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-        <Route path="alarm" element={<AlramSwitchs
+        <Route path="alram" element={<AlramSwitchs
           alarmPermissionSwitch={<AlramSwitch checked={permission}
             handleChange={changeAlarmPermission}
             message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
@@ -162,25 +162,25 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
 function getTabValue(path) {
   if (path === 'upcoming') {
     return 'upcoming';
-  } else if (path === 'alarm') {
-    return 'alarm';
+  } else if (path === 'alram') {
+    return 'alram';
   } else if (path === 'streamingexpired') {
     return 'streamingexpired';
   } else if (path === 'releasing') {
     return 'releasing';
   }
-  return 'upcoming';
+  return '/';
 }
 
 function getTabPath(value) {
   if (value === 'upcoming') {
     return 'upcoming';
-  } else if (value === 'alarm') {
-    return 'alarm';
+  } else if (value === 'alram') {
+    return 'alram';
   } else if (value === 'streamingexpired') {
     return 'streamingexpired';
   } else if (value === 'releasing') {
     return 'releasing';
   }
-  return 'upcoming';
+  return '/';
 }
