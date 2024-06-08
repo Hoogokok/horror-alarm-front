@@ -51,11 +51,13 @@ const checkedUpcomingMovie = intialSubscription.subscribe[0];
 const checkedNetflix = intialSubscription.subscribe[1];
 
 export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies }) {
+  // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
+  const [value, setValue] = useState(getTabValue(path));
+  // 영화 상세 정보 다이얼로그에 쓰이는 state
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [value, setValue] = useState(getTabValue(path));
 
 
   useEffect(() => {
