@@ -8,8 +8,9 @@ const app = fcm(FIREBASE_CONFIG);
 const messaging = getMessaging(app);
 
 class AlarmStatus {
-  permission = false;
+  permission = "default" || "granted" || "denied";
   subscribe = [false, false];
+  error = null;
 
   constructor(permission, subscribe) {
     this.permission = permission;
@@ -17,15 +18,29 @@ class AlarmStatus {
   }
 }
 
+class SubscriptionResponse {
+  status = "success" || "error";
+  error = null;
+
+  constructor(data) {
+    this.data = data;
+  }
+}
+
+
 async function handleInitialSubscription() {
   console.log("초기화 작업 시작")
   const permission = checkPermission();
   if (permission === 'granted') {
-    const token = await getToken(messaging);
-    const result = await checkTokenTimeStamps(token);
-    const topicContents = await getCheckedTopicsSubscribed(result.newToken);
-    return new AlarmStatus(true, [topicContents.includes('upcoming_movie'),
-    topicContents.includes('netflix_expiring')]);
+    try {
+      const token = await getToken(messaging);
+      const result = await checkTokenTimeStamps(token);
+      const topicContents = await getCheckedTopicsSubscribed(result.newToken);
+      return new AlarmStatus(permission, [topicContents.includes('upcoming_movie'), topicContents.includes('netflix_expiring')]);
+    } catch (error) {
+      console.error("초기 구독 확인 실패", error);
+      return new AlarmStatus(permission, [false, false], error);
+    }
   }
   return new AlarmStatus(false, [false, false]);
 }
