@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { AlramSwitchs } from "./AlramSwitchs"
+import AlramSwitch from "./AlramSwitch"
 import { MovieList } from "./MovieList"
 import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
@@ -15,6 +16,12 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+  handleAlarmPermission,
+  handleUpcomingMovieSubscribe,
+  handleNetflixSubscribe,
+  handleInitialSubscription
+} from "../functions/messaging";
 
 const theme = createTheme({
   palette: {
@@ -37,6 +44,11 @@ const theme = createTheme({
     },
   },
 });
+
+const intialSubscription = await handleInitialSubscription();
+const checkedPermission = intialSubscription.permission;
+const checkedUpcomingMovie = intialSubscription.subscribe[0];
+const checkedNetflix = intialSubscription.subscribe[1];
 
 export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies }) {
   const location = useLocation();
