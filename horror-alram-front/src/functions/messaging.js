@@ -104,11 +104,10 @@ async function handleUpcomingMovieSubscribe(checkedPermission,
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkedSubscribe) {
-      await subscribed(token, 'upcoming_movie');
-      return true;
+      return await subscribed(token, 'upcoming_movie');
+      
     } else {
-      await unsubscribed(token, 'upcoming_movie');
-      return false;
+      return await unsubscribed(token, 'upcoming_movie');
     }
   } else {
     alert('알람 권한을 허용해주세요.');
@@ -120,11 +119,10 @@ async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkNetflix) {
-      await subscribed(token, 'netflix_expiring');
-      return true
+      return await subscribed(token, 'netflix_expiring');
+      
     } else {
-      await unsubscribed(token, 'netflix_expiring');
-      return false;
+      return await unsubscribed(token, 'netflix_expiring');
     }
   } else {
     alert('알람 권한을 허용해주세요.');
