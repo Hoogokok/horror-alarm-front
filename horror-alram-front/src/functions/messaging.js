@@ -22,8 +22,9 @@ class SubscriptionResponse {
   status = "subscribe" || "unsubscribe" || "error";
   error = null;
 
-  constructor(data) {
-    this.data = data;
+  constructor({ status, error }) {
+    this.status = status;
+    this.error = error;
   }
 }
 
@@ -145,7 +146,7 @@ async function subscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
-    return new SubscriptionResponse({ status: "success" });
+    return new SubscriptionResponse({ status: "subscribe" });
   }).catch((error) => {
     console.error("구독 실패", error);
     return new SubscriptionResponse({ status: "error" , error: error });
@@ -163,7 +164,7 @@ async function unsubscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
-    return new SubscriptionResponse({ status: "success" });
+    return new SubscriptionResponse({ status: "unsubscribe" });
   }
   ).catch((error) => {
     console.error("구독 해제 실패", error);
