@@ -80,6 +80,24 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
     setOpen(false);
   };
 
+  const changeAlarmPermission = async () => {
+    await handleAlarmPermission().then(result => {
+      setPermission((result) => (result === 'granted'));
+    });
+  };
+  const changeUpcomingMovieSubscribe = async () => {
+    await handleUpcomingMovieSubscribe(permission, subscribeUpcoming).then(result => {
+      setSubscribeUpcoming((result) => (result.status === 'success'));
+    });
+  };
+  
+  const changeeNetflixSubscribe = async () => {
+    await handleNetflixSubscribe(permission, subscribeNetflix).then(result => {
+      setSubscribeNetflix((result) => (result.status === 'success'));
+    });
+  };
+
+
   return (
     <Container>
       <ThemeProvider theme={theme}>
