@@ -45,12 +45,8 @@ const theme = createTheme({
   },
 });
 
-const intialSubscription = await handleInitialSubscription();
-const checkedPermission = intialSubscription.permission;
-const checkedUpcomingMovie = intialSubscription.subscribe[0];
-const checkedNetflix = intialSubscription.subscribe[1];
 
-export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies }) {
+export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies, intialSubscription }) {
   // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
@@ -59,6 +55,9 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   // 알람 설정에 쓰이는 state
+  const checkedPermission = intialSubscription.permission;
+  const checkedUpcomingMovie = intialSubscription.subscribe[0];
+  const checkedNetflix = intialSubscription.subscribe[1];
   const [permission, setPermission] = useState(checkedPermission === "granted");
   const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
   const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);
