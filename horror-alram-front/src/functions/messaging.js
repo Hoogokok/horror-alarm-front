@@ -19,7 +19,7 @@ class AlarmStatus {
 }
 
 class SubscriptionResponse {
-  status = "success" || "error";
+  status = "subscribe" || "unsubscribe" || "error";
   error = null;
 
   constructor(data) {
