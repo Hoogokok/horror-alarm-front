@@ -112,6 +112,7 @@ async function handleUpcomingMovieSubscribe(checkedPermission,
     }
   } else {
     alert('알람 권한을 허용해주세요.');
+    return checkedPermission;
   }
 }
 
