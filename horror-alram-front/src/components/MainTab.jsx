@@ -81,19 +81,28 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   };
 
   const changeAlarmPermission = async () => {
-    await handleAlarmPermission().then(result => {
-      setPermission((result) => (result === 'granted'));
-    });
+    const result = await handleAlarmPermission();
+    setPermission((prev => {
+      if (result) {
+        return !prev;
+      }
+      return prev;
+    }
+    ));
   };
   const changeUpcomingMovieSubscribe = async () => {
-    await handleUpcomingMovieSubscribe(permission, subscribeUpcoming).then(result => {
-      setSubscribeUpcoming((result) => (result.status === 'success'));
-    });
+    const result = await handleUpcomingMovieSubscribe(permission, subscribeUpcoming);
+    setSubscribeUpcoming((prev => {
+      return result.status === 'subscribe';
+    }
+    ));
   };
   const changeeNetflixSubscribe = async () => {
-    await handleNetflixSubscribe(permission, subscribeNetflix).then(result => {
-      setSubscribeNetflix((result) => (result.status === 'success'));
-    });
+    const result = await handleNetflixSubscribe(permission, subscribeNetflix);
+    setSubscribeNetflix((prev => {
+      return result.status === 'subscribe';
+    }
+    ));
   };
 
 
