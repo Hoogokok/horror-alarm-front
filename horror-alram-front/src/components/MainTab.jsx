@@ -58,6 +58,10 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   // 영화 상세 정보 다이얼로그에 쓰이는 state
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  // 알람 설정에 쓰이는 state
+  const [permission, setPermission] = useState(checkedPermission === "granted");
+  const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
+  const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);
 
 
   useEffect(() => {
