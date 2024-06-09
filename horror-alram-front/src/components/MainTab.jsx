@@ -20,8 +20,8 @@ import {
   handleAlarmPermission,
   handleUpcomingMovieSubscribe,
   handleNetflixSubscribe,
-  handleInitialSubscription
 } from "../functions/messaging";
+import { useMediaQuery } from '@mui/material';
 
 const theme = createTheme({
   palette: {
@@ -47,6 +47,7 @@ const theme = createTheme({
 
 
 export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies, intialSubscription }) {
+  const isDesktop = useMediaQuery('(min-width:756px)');
   // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
   const path = location.pathname.split('/')[1] || 'upcoming';
@@ -112,7 +113,10 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           value={value} onChange={handleChange}
           indicatorColor="secondary"
           textColor="white"
-          centered
+          variant={isDesktop ? "fullWidth" : "scrollable"}
+          allowScrollButtonsMobile
+          scrollButtons
+          centered 
         >
           <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming" />
           <Tab label="개봉중" value="releasing" component={Link} to="/releasing" />
