@@ -20,8 +20,15 @@ import {
   handleAlarmPermission,
   handleUpcomingMovieSubscribe,
   handleNetflixSubscribe,
+  handleInitialSubscription
 } from "../functions/messaging";
+import getUpcomingMovies from '../functions/upcoming';
+import getExpiringMovies from '../functions/expiring';
+import getReleasingMovies from '../functions/releasing';
+import { useQuery } from '@tanstack/react-query';
 import { useMediaQuery } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const theme = createTheme({
   palette: {
@@ -46,7 +53,23 @@ const theme = createTheme({
 });
 
 
-export default function MainTabs({ upcomingMovies, streamingMovies, releasingMovies, intialSubscription }) {
+export default function MainTabs() {
+  const { data: upcomingMovies, isLoading: upcomingMoviesLoading, error: upcomingMoviesError } = useQuery({
+    queryKey: 'upcomingMovies',
+    queryFn: async () => getUpcomingMovies(),
+  });
+  const { data: streamingMovies, isLoading: streamingMoviesLoading, error: streamingMoviesError } = useQuery({
+    queryKey: 'streamingMovies',
+    queryFn: async () => getExpiringMovies(),
+  });
+  const { data: releasingMovies, isLoading: releasingMoviesLoading, error: releasingMoviesError } = useQuery({
+    queryKey: 'releasingMovies',
+    queryFn: async () => getReleasingMovies(),
+  });
+  const { data: intialSubscription, isLoading: intialSubscriptionLoading, error: intialSubscriptionError } = useQuery({
+    queryKey: 'intialSubscription',
+    queryFn: async () => handleInitialSubscription(),
+  });
   const isDesktop = useMediaQuery('(min-width:756px)');
   // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
@@ -56,9 +79,9 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   // 알람 설정에 쓰이는 state
-  const checkedPermission = intialSubscription.permission;
-  const checkedUpcomingMovie = intialSubscription.subscribe[0];
-  const checkedNetflix = intialSubscription.subscribe[1];
+  const checkedPermission = intialSubscription?.permission;
+  const checkedUpcomingMovie = intialSubscription?.subscribe[0];
+  const checkedNetflix = intialSubscription?.subscribe[1];
   const [permission, setPermission] = useState(checkedPermission === "granted");
   const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
   const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);
@@ -67,6 +90,14 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
   useEffect(() => {
     window.history.replaceState(null, '', `/${getTabPath(value)}`);
   }, [value]);
+
+
+  if (upcomingMoviesLoading || streamingMoviesLoading || releasingMoviesLoading || intialSubscriptionLoading) {
+    return <CircularProgress color='secondary' />;
+  }
+  if (upcomingMoviesError || streamingMoviesError || releasingMoviesError || intialSubscriptionError) {
+    return <div>서버 문제로 정보를 가져올 수 없습니다.</div>;
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -116,7 +147,7 @@ export default function MainTabs({ upcomingMovies, streamingMovies, releasingMov
           variant={isDesktop ? "fullWidth" : "scrollable"}
           allowScrollButtonsMobile
           scrollButtons
-          centered 
+          centered
         >
           <Tab label="개봉 예정" value="upcoming" component={Link} to="/upcoming" />
           <Tab label="개봉중" value="releasing" component={Link} to="/releasing" />
