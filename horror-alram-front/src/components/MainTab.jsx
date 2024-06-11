@@ -67,8 +67,8 @@ export default function MainTabs() {
     queryFn: async () => getReleasingMovies(),
   });
   const defaultInitialSubscription = {
-    permission: 'granted', // 기본값으로 'granted'를 설정합니다.
-    subscribe: [true, true], // 기본값으로 모두 구독한 것으로 설정합니다.
+    permission: 'default', // 기본값으로 'default'를 설정합니다.
+    subscribe: [false, false], // 기본값으로 모두 구독하지 않은 것으로 설정합니다.
   };
   const { data: intialSubscription, isLoading: intialSubscriptionLoading, error: intialSubscriptionError } = useQuery({
     queryKey: 'intialSubscription',
@@ -84,10 +84,9 @@ export default function MainTabs() {
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   // 알람 설정에 쓰이는 state
-  const checkedPermission = intialSubscription?.permission ?? "granted"; // 기본값으로 'granted'를 설정합니다.
-  const checkedUpcomingMovie = intialSubscription?.subscribe[0] ?? true;
-  const checkedNetflix = intialSubscription?.subscribe[1] ?? true;
-  
+  const checkedPermission = intialSubscription?.permission ?? 'denied';
+  const checkedUpcomingMovie = intialSubscription?.subscribe?.[0] ?? false;
+  const checkedNetflix = intialSubscription?.subscribe?.[1] ?? false;
   const [permission, setPermission] = useState(checkedPermission === "granted");
   const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
   const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);

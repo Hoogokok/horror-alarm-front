@@ -52,7 +52,6 @@ async function getCheckedTopicsSubscribed(token) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
     },
     mode: 'cors'
     ,
@@ -141,7 +140,6 @@ async function subscribed(token, topic) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
     },
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
@@ -159,7 +157,6 @@ async function unsubscribed(token, topic) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
     },
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
@@ -183,7 +180,6 @@ async function checkTokenTimeStamps(token) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
     },
     mode: 'cors',
   }).then(r => r.json())
@@ -205,7 +201,6 @@ async function checkTokenTimeStamps(token) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
       },
       mode: 'cors',
       body: JSON.stringify({ oldToken: token, newToken, newTime })
@@ -237,7 +232,6 @@ async function requestPermission() {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
       },
       body: JSON.stringify({ token: newToken, time: newTime })
     }).then(r => {
