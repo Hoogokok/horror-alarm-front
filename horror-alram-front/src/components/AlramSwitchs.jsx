@@ -25,11 +25,9 @@ export function AlramSwitchs() {
   const isMobile = useMediaQuery('(min-width:756px)');
   const { data: intialSubscription, isLoading: initialLoading, isError: initialError } = useQuery({
     queryKey: 'initialSubscription',
-    queryFn: handleInitialSubscription,
-    staleTime: 1000 * 60 * 60,
-    cacheTime: 1000 * 60 * 60 // 1시간
+    queryFn: handleInitialSubscription
   });
-  const [permission, setPermission] = useState(false)
+  const [permissionAlram, setPermissionAlram] = useState("default")
   const [upcomingSub, setUpcomingSub] = useState(false)
   const [netflixSub, setNetflixSub] = useState(false)
 
@@ -37,24 +35,30 @@ export function AlramSwitchs() {
   const alramMutation = useMutation({
     mutationFn: handleAlarmPermission,
     onSuccess: () => {
-      setPermission(!permission)
+      const current = permissionAlram === 'default' ? 'granted' : 'default'
+      setPermissionAlram(current)
+      intialSubscription.permission = current
     }
   })
   const upcomingMutation = useMutation({
     mutationFn: () => {
-      handleUpcomingMovieSubscribe(permission, upcomingSub)
+      handleUpcomingMovieSubscribe(permissionAlram, upcomingSub)
     },
     onSuccess: () => {
-      setUpcomingSub(!upcomingSub)
+      const current = !upcomingSub
+      setUpcomingSub(current)
+      intialSubscription.subscribe[0] = current
     }
   })
 
   const netflixMutation = useMutation({
     mutationFn: () => {
-      handleNetflixSubscribe(permission, netflixSub)
+      handleNetflixSubscribe(permissionAlram, netflixSub)
     },
     onSuccess: () => {
-      setNetflixSub(!netflixSub)
+      const current = !netflixSub
+      setNetflixSub(current)
+      intialSubscription.subscribe[1] = current
     }
   })
 
@@ -86,10 +90,20 @@ export function AlramSwitchs() {
     return <div>알람 설정에 실패했습니다.</div>
   }
 
-  if (intialSubscription.permission !== permission || intialSubscription.upcomingSub !== upcomingSub || intialSubscription.netflixSub !== netflixSub) {
-    setPermission(intialSubscription.permission)
-    setUpcomingSub(intialSubscription.upcomingSub)
-    setNetflixSub(intialSubscription.netflixSub)
+
+  const { permission, subscribe } = intialSubscription
+  const [permissionResult, upcomingSubResult, netflixSubResult] = [permission, subscribe[0], subscribe[1]]
+
+  if (permissionResult !== permissionAlram) {
+    setPermissionAlram(permissionResult)
+  }
+
+  if (upcomingSubResult !== upcomingSub) {
+    setUpcomingSub(upcomingSubResult)
+  }
+
+  if (netflixSubResult !== netflixSub) {
+    setNetflixSub(netflixSubResult)
   }
 
 
@@ -104,7 +118,7 @@ export function AlramSwitchs() {
     }>
       <ThemeProvider theme={theme}>
         <AlramSwitch
-          checked={permission}
+          checked={permissionAlram}
           handleSwitch={onAlarmPermission}
           message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }} />
         <AlramSwitch
