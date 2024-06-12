@@ -19,13 +19,50 @@ const theme = createTheme({
   },
 });
 
-export function AlramSwitchs({ intialSubscription, alarmPermissionSwitch, upcomingSubscriptionSwitch, netflixSubscriptionSwitch }) {
+export function AlramSwitchs() {
   const isMobile = useMediaQuery('(min-width:756px)');
   const queryClient = useQueryClient()
   const { data: intialSubscription, isLoading: initialLoading, isError: initialError } = useQuery({
     queryKey: 'initialSubscription',
     queryFn: handleInitialSubscription,
   });
+
+  const alramMutation = useMutation({
+    mutationFn: handleAlarmPermission,
+    onSuccess: () => {
+      queryClient.invalidateQueries('initialSubscription')
+    }
+  })
+  const upcomingMutation = useMutation({
+    mutationFn: () => {
+      handleUpcomingMovieSubscribe(intialSubscription?.permission, intialSubscription?.subscribe?.[0])
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries('initialSubscription')
+    }
+  })
+
+  const netflixMutation = useMutation({
+    mutationFn: () => {
+      handleNetflixSubscribe(intialSubscription?.permission, intialSubscription?.subscribe?.[1])
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries('initialSubscription')
+    }
+  })
+
+  const onAlarmPermission = () => {
+    alramMutation.mutate()
+  }
+
+  const onUpcomingMovieSubscribe = () => {
+    upcomingMutation.mutate()
+  }
+
+  const onNetflixSubscribe = () => {
+    netflixMutation.mutate()
+  }
+
 
 
   return (<Container>
