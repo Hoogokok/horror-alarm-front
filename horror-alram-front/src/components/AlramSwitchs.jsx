@@ -94,7 +94,19 @@ export function AlramSwitchs() {
       }
     }>
       <ThemeProvider theme={theme}>
-     
+        <AlramSwitch
+          checked={checkPermission}
+          handleSwitch={onAlarmPermission}
+          message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }} />
+        <AlramSwitch
+          checked={checkUpcomingMovie}
+          handleSwitch={onUpcomingMovieSubscribe}
+          message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }} />
+        <AlramSwitch
+          checked={checkNetflix}
+          handleSwitch={onNetflixSubscribe}
+          message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
+        />
       </ThemeProvider>
     </FormGroup>
   </Container>);
