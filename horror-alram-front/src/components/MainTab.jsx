@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { AlramSwitchs } from "./AlramSwitchs"
-import AlramSwitch from "./AlramSwitch"
 import { MovieList } from "./MovieList"
 import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';
@@ -16,12 +15,6 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {
-  handleAlarmPermission,
-  handleUpcomingMovieSubscribe,
-  handleNetflixSubscribe,
-  handleInitialSubscription
-} from "../functions/messaging";
 import getUpcomingMovies from '../functions/upcoming';
 import getExpiringMovies from '../functions/expiring';
 import getReleasingMovies from '../functions/releasing';
@@ -55,7 +48,7 @@ const theme = createTheme({
 
 export default function MainTabs() {
   const { data: upcomingMovies, isLoading: upcomingMoviesLoading, error: upcomingMoviesError } = useQuery({
-    queryKey: 'upcomingMovies',
+    queryKey: ['upcomingMovies'],
     queryFn: async () => getUpcomingMovies(),
   });
   const { data: streamingMovies, isLoading: streamingMoviesLoading, error: streamingMoviesError } = useQuery({
@@ -66,15 +59,7 @@ export default function MainTabs() {
     queryKey: 'releasingMovies',
     queryFn: async () => getReleasingMovies(),
   });
-  const defaultInitialSubscription = {
-    permission: 'default', // 기본값으로 'default'를 설정합니다.
-    subscribe: [false, false], // 기본값으로 모두 구독하지 않은 것으로 설정합니다.
-  };
-  const { data: intialSubscription, isLoading: intialSubscriptionLoading, error: intialSubscriptionError } = useQuery({
-    queryKey: 'intialSubscription',
-    queryFn: async () => handleInitialSubscription(),
-    initialData: defaultInitialSubscription,
-  });
+
   const isDesktop = useMediaQuery('(min-width:756px)');
   // 라우터에서 현재 경로를 가져와서 탭의 value로 사용 
   const location = useLocation();
@@ -83,13 +68,6 @@ export default function MainTabs() {
   // 영화 상세 정보 다이얼로그에 쓰이는 state
   const [open, setOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  // 알람 설정에 쓰이는 state
-  const checkedPermission = intialSubscription?.permission ?? 'denied';
-  const checkedUpcomingMovie = intialSubscription?.subscribe?.[0] ?? false;
-  const checkedNetflix = intialSubscription?.subscribe?.[1] ?? false;
-  const [permission, setPermission] = useState(checkedPermission === "granted");
-  const [subscribeUpcoming, setSubscribeUpcoming] = useState(checkedUpcomingMovie);
-  const [subscribeNetflix, setSubscribeNetflix] = useState(checkedNetflix);
 
 
   useEffect(() => {
@@ -97,10 +75,10 @@ export default function MainTabs() {
   }, [value]);
 
 
-  if (upcomingMoviesLoading || streamingMoviesLoading || releasingMoviesLoading || intialSubscriptionLoading) {
+  if (upcomingMoviesLoading || streamingMoviesLoading || releasingMoviesLoading) {
     return <CircularProgress color='secondary' />;
   }
-  if (upcomingMoviesError || streamingMoviesError || releasingMoviesError || intialSubscriptionError) {
+  if (upcomingMoviesError || streamingMoviesError || releasingMoviesError) {
     return <div>서버 문제로 정보를 가져올 수 없습니다.</div>;
   }
 
@@ -115,32 +93,6 @@ export default function MainTabs() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const changeAlarmPermission = async () => {
-    const result = await handleAlarmPermission();
-    setPermission((prev => {
-      if (result) {
-        return !prev;
-      }
-      return prev;
-    }
-    ));
-  };
-  const changeUpcomingMovieSubscribe = async () => {
-    const result = await handleUpcomingMovieSubscribe(permission, subscribeUpcoming);
-    setSubscribeUpcoming((prev => {
-      return result.status === 'subscribe';
-    }
-    ));
-  };
-  const changeeNetflixSubscribe = async () => {
-    const result = await handleNetflixSubscribe(permission, subscribeNetflix);
-    setSubscribeNetflix((prev => {
-      return result.status === 'subscribe';
-    }
-    ));
-  };
-
 
   return (
     <Container>
@@ -175,20 +127,7 @@ export default function MainTabs() {
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-        <Route path="alram" element={<AlramSwitchs
-          alarmPermissionSwitch={<AlramSwitch checked={permission}
-            handleChange={changeAlarmPermission}
-            message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }}
-          />}
-          upcomingSubscriptionSwitch={<AlramSwitch checked={subscribeUpcoming}
-            handleChange={changeUpcomingMovieSubscribe}
-            message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }}
-          />}
-          netflixSubscriptionSwitch={<AlramSwitch checked={subscribeNetflix}
-            handleChange={changeeNetflixSubscribe}
-            message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
-          />}
-        />} />
+        <Route path="alram" element={<AlramSwitchs />} />
         <Route path="streamingexpired" element={<StreamingTimeline
           movies={streamingMovies.movies} error={streamingMovies.error}
         />} />
