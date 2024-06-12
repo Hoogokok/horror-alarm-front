@@ -7,10 +7,10 @@ const LabelText = styled('span')({
     textAlign: 'center',
 });
 
-export default function AlramSwitch({ checked, handleChange, message }) {
+export default function AlramSwitch({ checked, handleSwitch, message }) {
     return (<FormControlLabel control={<Switch
         checked={checked}
-        onChange={handleChange}
+        onChange={handleSwitch}
         inputProps={{ 'aria-label': 'controlled' }}
     />} label={checked ? <LabelText>
         {message.onMessage}
