@@ -10,6 +10,7 @@ import {
 } from "../functions/messaging";
 import AlramSwitch from "./AlramSwitch"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const theme = createTheme({
   palette: {
@@ -63,7 +64,25 @@ export function AlramSwitchs() {
     netflixMutation.mutate()
   }
 
+  if (initialLoading) {
+    return <CircularProgress />
+  }
 
+  if (initialError) {
+    return <div>서버 문제로 알람 초기화에 실패했습니다.</div>
+  }
+
+  if (alramMutation.isLoading || upcomingMutation.isLoading || netflixMutation.isLoading) {
+    return <CircularProgress />
+  }
+
+  if (alramMutation.isError || upcomingMutation.isError || netflixMutation.isError) {
+    return <div>알람 설정에 실패했습니다.</div>
+  }
+
+  const checkPermission = intialSubscription?.permission === 'granted'
+  const checkUpcomingMovie = intialSubscription?.subscribe?.[0]
+  const checkNetflix = intialSubscription?.subscribe?.[1]
 
   return (<Container>
     <FormGroup sx={
@@ -75,9 +94,7 @@ export function AlramSwitchs() {
       }
     }>
       <ThemeProvider theme={theme}>
-        {alarmPermissionSwitch}
-        {upcomingSubscriptionSwitch}
-        {netflixSubscriptionSwitch}
+     
       </ThemeProvider>
     </FormGroup>
   </Container>);
