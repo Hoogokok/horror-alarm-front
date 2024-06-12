@@ -1,4 +1,4 @@
-import { FIREBASE_CONFIG, SUPABASE_CONFIG } from "../config.js";
+import { FIREBASE_CONFIG } from "../config.js";
 import { initializeApp as fcm } from "firebase/app";
 import {
   getMessaging, getToken, deleteToken,
@@ -105,7 +105,7 @@ async function handleUpcomingMovieSubscribe(checkedPermission,
     const token = await getToken(messaging);
     if (!checkedSubscribe) {
       return await subscribed(token, 'upcoming_movie');
-      
+
     } else {
       return await unsubscribed(token, 'upcoming_movie');
     }
@@ -120,7 +120,7 @@ async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
     const token = await getToken(messaging);
     if (!checkNetflix) {
       return await subscribed(token, 'netflix_expiring');
-      
+
     } else {
       return await unsubscribed(token, 'netflix_expiring');
     }
@@ -147,7 +147,7 @@ async function subscribed(token, topic) {
     return new SubscriptionResponse({ status: "subscribe" });
   }).catch((error) => {
     console.error("구독 실패", error);
-    return new SubscriptionResponse({ status: "error" , error: error });
+    return new SubscriptionResponse({ status: "error", error: error });
   });
 }
 
@@ -184,7 +184,7 @@ async function checkTokenTimeStamps(token) {
     mode: 'cors',
   }).then(r => r.json())
     .then((data) => {
-      return data;
+      return data.value
     })
     .catch((error) => {
       console.error("토큰 타임스탬프 확인 실패", error);
@@ -192,22 +192,26 @@ async function checkTokenTimeStamps(token) {
     })
   if (!error && data) {
     console.log('토큰이 만료됨');
-    const date = new Date(); // 현재 날짜 및 시간
-    // "yyyy-mm-dd" 형식으로 변환
-    const newTime = date.toISOString().split('T')[0];
-    await deleteToken(messaging);
-    const newToken = await getToken(messaging);
-    await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/timestamp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-      body: JSON.stringify({ oldToken: token, newToken, newTime })
-    });
+    const { newToken, newTime } = await updateTokenAndTime(token);
     return { newToken, newTime };
   }
   return { newToken: token, newTime: "" };
+}
+
+async function updateTokenAndTime(token) {
+  const date = new Date();
+  const newTime = date.toISOString().split('T')[0];
+  await deleteToken(messaging);
+  const newToken = await getToken(messaging);
+  await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/timestamp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+    body: JSON.stringify({ oldToken: token, newToken, newTime })
+  });
+  return { newToken, newTime };
 }
 
 async function createTokenAndTime() {
