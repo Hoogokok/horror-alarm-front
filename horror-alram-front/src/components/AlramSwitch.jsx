@@ -12,9 +12,7 @@ export default function AlramSwitch({ checked, handleSwitch, message }) {
         checked={checked}
         onChange={handleSwitch}
         inputProps={{ 'aria-label': 'controlled' }}
-    />} label={checked ? <LabelText>
-        {message.onMessage}
-    </LabelText> :
+    />} label={checked ? <LabelText>{message.onMessage}</LabelText> :
         <LabelText>{message.offMessage}</LabelText>}
     />)
 }
