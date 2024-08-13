@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://bara-bara.site",
+  "proxy": "https://horror-alarm-backend-ts.deno.dev",
   "eslintConfig": {
     "extends": [
       "react-app",

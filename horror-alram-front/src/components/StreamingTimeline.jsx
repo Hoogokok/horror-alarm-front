@@ -38,7 +38,7 @@ const Div = styled('div')({
 });
 
 export function StreamingTimeline({ movies, error }) {
-  const expiredMovies = movies.expiredMovies;
+  const expiredMovies = movies.expiredMovies.expiredMovies;
   return (
     <ThemeProvider theme={theme}>
       <ListSubheader sx={
