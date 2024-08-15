@@ -15,7 +15,7 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import getUpcomingMovies from '../functions/upcoming';
+import {getUpcomingMovies} from '../functions/upcoming';
 import getExpiringMovies from '../functions/expiring';
 import getReleasingMovies from '../functions/releasing';
 import { useQuery } from '@tanstack/react-query';
