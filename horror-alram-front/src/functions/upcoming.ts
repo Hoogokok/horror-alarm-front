@@ -3,6 +3,7 @@ export interface MovieResponse {
     id: number;
     title: string;
     poster_path: string;
+    overview: string;
 }
 
 export interface ResponseError {
