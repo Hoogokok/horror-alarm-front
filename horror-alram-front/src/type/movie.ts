@@ -16,7 +16,7 @@ export type ResponseError = {
 }
 
 export interface Movies {
-    movies: MovieResponse[];
+    movies: Array<MovieResponse>;
     error: ResponseError;
 }
 
