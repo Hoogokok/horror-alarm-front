@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ResponseError } from './upcoming';
+import { ResponseError, requestMovieApi } from './upcoming';
 
 /*
 id: 영화 아이디(long)
@@ -24,26 +24,13 @@ export default async function getExpiringMovies(): Promise<ExpiringMovieResponse
         movies: [],
         error: undefined
     };
-    try {
-        const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`);
-        expiringMovies.movies = response.data;
-        return expiringMovies;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            expiringMovies.error = {
-                data: {
-                    message: error.message,
-                    status: error.response?.status || 500
-                }
-            };
-            return expiringMovies;
-        }
-        expiringMovies.error = {
-            data: {
-                message: '알 수 없는 에러',
-                status: 500
-            }
-        };
+    const response = await requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`));
+    if ('status' in response.data) {
+        expiringMovies.error = response;
         return expiringMovies;
     }
+
+    expiringMovies.movies = response.data;
+
+    return expiringMovies;
 }
