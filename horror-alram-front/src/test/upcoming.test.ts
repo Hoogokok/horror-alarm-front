@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest'
 import { getUpcomingMovies } from '../functions/upcoming'
-import { release } from 'os'
+import { isError } from 'util'
 
 // 테스트 데이터 정의
 const successResponse = {
@@ -14,16 +14,23 @@ const successResponse = {
             releaseDate: '2021-10-10'
         }
     ],
-    error: undefined
+    error: {
+        data: {
+            message: 'success',
+            status: 200
+        },
+        isError: false
+    }
 }
 
 const errorResponse = {
-    movies: undefined,
+    movies: [],
     error: {
         data: {
             message: 'error',
             status: 500
-        }
+        },
+        isError: true
     }
 }
 // 모킹할 함수 정의

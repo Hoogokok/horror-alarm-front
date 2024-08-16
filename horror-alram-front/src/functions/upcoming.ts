@@ -1,4 +1,5 @@
-import axios, { Axios, AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
+
 export interface MovieResponse {
     id: number;
     title: string;
@@ -8,26 +9,33 @@ export interface MovieResponse {
     theaters: Array<string>;
 }
 
-export interface ResponseError {
-    data: {
+export type ResponseError = {
+    data?: {
         message: string;
         status: number;
     };
+    isError: boolean;
 }
 
 export interface Movies {
-    movies: MovieResponse[] | undefined;
-    error: ResponseError | undefined;
+    movies: MovieResponse[];
+    error: ResponseError;
 }
 
 export async function getUpcomingMovies(): Promise<Movies> {
     const upcomingMovies: Movies = {
-        movies: undefined,
-        error: undefined
+        movies: [],
+        error: {
+            data: {
+                message: '',
+                status: 0
+            },
+            isError: false
+        }
     };
-    const response: AxiosResponse | ResponseError = await requestMovieApi(await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`));
-    if ('status' in response.data) {
-        upcomingMovies.error = response;
+    const response: AxiosResponse | ResponseError = await requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`));
+    if ((response as ResponseError).isError !== undefined) {
+        upcomingMovies.error = response as ResponseError;
         return upcomingMovies;
     }
     upcomingMovies.movies = response.data;
@@ -51,13 +59,15 @@ function handleResponseError(error: unknown): ResponseError {
             data: {
                 message: error.message,
                 status: error.response?.status || 500
-            }
+            },
+            isError: true
         };
     }
     return {
         data: {
             message: '알 수 없는 에러',
             status: 500
-        }
+        },
+        isError: true
     };
 }
