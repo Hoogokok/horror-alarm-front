@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { ResponseError, requestMovieApi } from './upcoming';
-
+import { requestMovieApi } from './upcoming';
+import { ResponseError, ExpiringMovieResponse } from '../type/movie';
 /*
 id: 영화 아이디(long)
 title: 영화 제목(문자열)
@@ -8,16 +8,6 @@ posterPath: 영화 포스터 uri
 expiredDate: 스트리밍 종료일
 */
 
-interface ExpiringMovie {
-    id: number;
-    title: string;
-    posterPath: string;
-    expiredDate: string;
-}
-interface ExpiringMovieResponse {
-    movies: Array<ExpiringMovie>;
-    error: ResponseError;
-}
 
 export default async function getExpiringMovies(): Promise<ExpiringMovieResponse> {
     const expiringMovies: ExpiringMovieResponse = {

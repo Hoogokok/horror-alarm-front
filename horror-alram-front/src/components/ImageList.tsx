@@ -1,6 +1,6 @@
 import { ImageList, ImageListItem, ImageListItemBar, useMediaQuery } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { MovieResponse, ResponseError } from '../functions/upcoming';
+import { MovieResponse, ResponseError } from '../type/movie';
 
 interface MovieImageListProps {
     movies: Array<MovieResponse>;

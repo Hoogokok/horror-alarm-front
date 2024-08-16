@@ -1,26 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-
-export interface MovieResponse {
-    id: number;
-    title: string;
-    releaseDate: string;
-    posterPath: string;
-    overview: string;
-    theaters: Array<string>;
-}
-
-export type ResponseError = {
-    data?: {
-        message: string;
-        status: number;
-    };
-    isError: boolean;
-}
-
-export interface Movies {
-    movies: MovieResponse[];
-    error: ResponseError;
-}
+import { Movies, ResponseError } from '../type/movie';
 
 export async function getUpcomingMovies(): Promise<Movies> {
     const upcomingMovies: Movies = {

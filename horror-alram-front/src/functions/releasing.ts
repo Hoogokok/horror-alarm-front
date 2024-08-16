@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { requestMovieApi, Movies, ResponseError } from './upcoming';
+import { requestMovieApi } from './upcoming';
+import { Movies, ResponseError } from '../type/movie';
 
 export default async function getReleasingMovies() {
     const releasingMovies: Movies = {

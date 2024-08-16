@@ -1,7 +1,7 @@
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { MovieResponse } from '../functions/upcoming';
+import { MovieResponse } from '../type/movie';
 
 interface MovieOverViewDialogProps {
   open: boolean;
