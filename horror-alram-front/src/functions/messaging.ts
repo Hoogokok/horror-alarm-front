@@ -57,7 +57,7 @@ async function getCheckedTopicsSubscribed(token: string): Promise<TopicContents>
   return response;
 }
 
-async function handleAlarmPermission() {
+async function handleAlarmPermission(): Promise<boolean> {
   const permission = checkPermission();
   if (permission === 'granted') {
     alert('알람을 해제하려면 브라우저 설정에서 알람 권한을 해제해주세요.');
@@ -75,6 +75,7 @@ async function handleAlarmPermission() {
       return permission === 'granted';
     });
   }
+  return false;
 }
 
 function checkPermission(): string {
@@ -89,7 +90,7 @@ function checkPermission(): string {
 }
 
 async function handleUpcomingMovieSubscribe(checkedPermission: boolean,
-  checkedSubscribe: boolean) {
+  checkedSubscribe: boolean): Promise<SubscriptionResponse> {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkedSubscribe) {
@@ -104,7 +105,7 @@ async function handleUpcomingMovieSubscribe(checkedPermission: boolean,
   }
 }
 
-async function handleNetflixSubscribe(checkedPermission: boolean, checkNetflix: boolean) {
+async function handleNetflixSubscribe(checkedPermission: boolean, checkNetflix: boolean): Promise<SubscriptionResponse> {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkNetflix) {
@@ -198,7 +199,7 @@ async function updateTokenAndTime(token: string): Promise<TokenTime> {
   return { newToken, newTime };
 }
 
-async function createTokenAndTime() {
+async function createTokenAndTime(): Promise<TokenTime> {
   try {
     const newToken = await getToken(messaging);
     const date = new Date(); // 현재 날짜 및 시간
@@ -210,7 +211,7 @@ async function createTokenAndTime() {
   }
 }
 
-async function requestPermission() {
+async function requestPermission(): Promise<void> {
   console.log('Requesting permission...');
   try {
     await Notification.requestPermission();
