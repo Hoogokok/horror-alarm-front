@@ -24,7 +24,7 @@ export async function getUpcomingMovies(): Promise<Movies> {
         movies: undefined,
         error: undefined
     };
-    const response: AxiosResponse | ResponseError = await requstUpcomingMovies();
+    const response: AxiosResponse | ResponseError = await requestMovieApi(await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`));
     if ('status' in response.data) {
         upcomingMovies.error = response;
         return upcomingMovies;
@@ -33,21 +33,25 @@ export async function getUpcomingMovies(): Promise<Movies> {
     return upcomingMovies;
 }
 
-async function requstUpcomingMovies(): Promise<AxiosResponse | ResponseError> {
+async function requestMovieApi(
+    request: () => Promise<AxiosResponse | ResponseError>
+): Promise<AxiosResponse | ResponseError> {
     try {
-        return await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`);
+        return request();
     }
     catch (error) {
-        console.log('상영 예정 중 에러 발생');
-        if (axios.isAxiosError(error)) {
-            console.error(error);
-            return {
-                data: {
-                    message: error.message,
-                    status: error.response?.status || 500
-                }
-            };
-        }
+        return handleResponseError(error);
+    }
+}
+
+function handleResponseError(error: unknown): ResponseError {
+    if (axios.isAxiosError(error)) {
+        return {
+            data: {
+                message: error.message,
+                status: error.response?.status || 500
+            }
+        };
     }
     return {
         data: {
@@ -56,4 +60,3 @@ async function requstUpcomingMovies(): Promise<AxiosResponse | ResponseError> {
         }
     };
 }
-
