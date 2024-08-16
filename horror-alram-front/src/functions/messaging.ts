@@ -100,8 +100,7 @@ async function handleUpcomingMovieSubscribe(checkedPermission: boolean,
       return await unsubscribed(token, 'upcoming_movie');
     }
   } else {
-    alert('알람 권한을 허용해주세요.');
-    return checkedPermission;
+    return { status: "error", error: "알람 권한을 허용해주세요." };
   }
 }
 
@@ -115,8 +114,7 @@ async function handleNetflixSubscribe(checkedPermission: boolean, checkNetflix: 
       return await unsubscribed(token, 'netflix_expiring');
     }
   } else {
-    alert('알람 권한을 허용해주세요.');
-    return checkPermission;
+    return { status: "error", error: "알람 권한을 허용해주세요." };
   }
 }
 
@@ -212,24 +210,15 @@ async function createTokenAndTime(): Promise<TokenTime> {
 }
 
 async function requestPermission(): Promise<void> {
-  console.log('Requesting permission...');
   try {
     await Notification.requestPermission();
     const { newToken, newTime } = await createTokenAndTime();
     console.log("Permission granted");
-    await fetch(`${process.env.REACT_APP_ALARM_API_URL}/api/permission`, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token: newToken, time: newTime })
-    }).then(r => {
-      console.log(r);
-    }).catch((error) => {
-      console.error("알람 권한 요청 실패", error);
-    }
-    );
+    await axios.post(`${process.env.REACT_APP_ALARM_API_URL}/api/permission`, { token: newToken, time: newTime })
+      .then(r => r.data)
+      .catch((error) => {
+        console.error("알람 권한 요청 실패", error);
+      });
   } catch (error) {
     alert('알람 권한을 허용해주세요.');
   }
