@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { Movies, ResponseError } from '../type/movie';
+import { MovieResponses, ResponseError } from '../type/movie';
 
-export default async function requestMovieInfo(request: () => Promise<AxiosResponse | ResponseError>): Promise<Movies> {
-    const requestResultInfo: Movies = {
+export default async function requestMovieInfo(request: () => Promise<AxiosResponse | ResponseError>): Promise<MovieResponses> {
+    const requestResultInfo: MovieResponses = {
         movies: [],
         error: {
             data: {

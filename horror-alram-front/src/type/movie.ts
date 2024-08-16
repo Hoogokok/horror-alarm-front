@@ -15,7 +15,7 @@ export type ResponseError = {
     isError: boolean;
 }
 
-export interface Movies {
+export interface MovieResponses {
     movies: Array<MovieResponse>;
     error: ResponseError;
 }
