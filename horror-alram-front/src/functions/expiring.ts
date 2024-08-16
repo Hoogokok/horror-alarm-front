@@ -1,20 +1,21 @@
 import axios from 'axios';
 
-class ExpiringMovieResponse {
-    constructor() {
-        this.movies = [];
-        this.error = null;
-    }
+interface  ExpiringMovieResponse {
+    movies: Array<any>;
+    error: any;
 }
 
 export default async function getExpiringMovies() {
+    const expiringMovies: ExpiringMovieResponse = {
+        movies: [],
+        error: undefined
+    };
     try {
         const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`);
-        const expiringMovies = new ExpiringMovieResponse();
         expiringMovies.movies = response.data;
         return expiringMovies;
     } catch (error) {
-        const expiringMovies = new ExpiringMovieResponse();
+        console.error('만료된 영화 에러 발생');
         expiringMovies.error = error;
         return expiringMovies;
     }
