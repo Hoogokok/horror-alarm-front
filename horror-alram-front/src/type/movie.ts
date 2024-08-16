@@ -15,18 +15,17 @@ export type ResponseError = {
     isError: boolean;
 }
 
-export interface MovieResponses {
-    movies: Array<MovieResponse>;
-    error: ResponseError;
-}
-
 export interface ExpiringMovie {
     id: number;
     title: string;
     posterPath: string;
     expiredDate: string;
 }
-export interface ExpiringMovieResponse {
-    movies: Array<ExpiringMovie>;
+
+interface GenericResponse<T> {
+    movies: Array<T>;
     error: ResponseError;
 }
+
+export type MovieResponses = GenericResponse<MovieResponse>;
+export type ExpiringMovieResponse = GenericResponse<ExpiringMovie>;
