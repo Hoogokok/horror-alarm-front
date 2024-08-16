@@ -16,9 +16,8 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import getReleasingMovies from '../functions/releasing';
-import requestMovieApi from '../functions/requestMovie';
 import getExpiringMovies from '../functions/expiring';
+import requestMovieApi from '../functions/requestMovie';
 import { useQuery } from '@tanstack/react-query';
 import { useMediaQuery } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -54,11 +53,11 @@ export default function MainTabs() {
   });
   const { data: streamingMovies, isLoading: streamingMoviesLoading, error: streamingMoviesError } = useQuery({
     queryKey: ['streamingMovies'],
-    queryFn: async () =>  requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`)),
+    queryFn: async () =>  getExpiringMovies(),
   });
   const { data: releasingMovies, isLoading: releasingMoviesLoading, error: releasingMoviesError } = useQuery({
     queryKey: ['releasingMovies'],
-    queryFn: async () => getReleasingMovies(),
+    queryFn: async () => requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`)),
   });
 
   const isDesktop = useMediaQuery('(min-width:756px)');
