@@ -48,9 +48,9 @@ export function StreamingTimeline({ movies, error }) {
           color: 'white',
         }
       }> 스트리밍 종료 예정 영화</ ListSubheader>
-      {error && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
-      {!error && expiredMovies.length === 0 && <Div>스트리밍 종료 예정인 영화가 없습니다.</Div>}
-      {!error && expiredMovies.length > 0 && <Timeline position="alternate">
+      {error.isError && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
+      {!error.isError && expiredMovies.length === 0 && <Div>스트리밍 종료 예정인 영화가 없습니다.</Div>}
+      {!error.isError && expiredMovies.length > 0 && <Timeline position="alternate">
         {expiredMovies.map((movie) => (
           <TimelineItem key={movie.id}>
             <TimelineSeparator>
