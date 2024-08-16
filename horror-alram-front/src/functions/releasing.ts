@@ -1,21 +1,22 @@
-import axios from 'axios';
-
-class ReleasingMovies {
-    constructor() {
-        this.movies = [];
-        this.error = null;
-    }
-}
+import axios, { AxiosResponse } from 'axios';
+import { requestMovieApi, Movies, ResponseError } from './upcoming';
 
 export default async function getReleasingMovies() {
-    try {
-        const response = await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`);
-        const releasingMovies = new ReleasingMovies();
-        releasingMovies.movies = response.data;
-        return releasingMovies;
-    } catch (error) {
-        const releasingMovies = new ReleasingMovies();
-        releasingMovies.error = error;
+    const releasingMovies: Movies = {
+        movies: [],
+        error: {
+            data: {
+                message: '',
+                status: 0
+            },
+            isError: false
+        }
+    };
+    const response: AxiosResponse | ResponseError = await requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`));
+    if ((response as ResponseError).isError !== undefined) {
+        releasingMovies.error = response as ResponseError;
         return releasingMovies;
     }
+    releasingMovies.movies = response.data;
+    return releasingMovies;
 }
