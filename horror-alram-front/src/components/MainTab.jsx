@@ -4,6 +4,7 @@ import {
   useLocation,
   Routes,
 } from 'react-router-dom'
+import axios from 'axios';
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -15,9 +16,9 @@ import { StreamingTimeline } from "./StreamingTimeline"
 import Detail from "./MovieDetail"
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {getUpcomingMovies} from '../functions/upcoming';
-import getExpiringMovies from '../functions/expiring';
 import getReleasingMovies from '../functions/releasing';
+import requestMovieApi from '../functions/requestMovie';
+import getExpiringMovies from '../functions/expiring';
 import { useQuery } from '@tanstack/react-query';
 import { useMediaQuery } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -49,14 +50,14 @@ const theme = createTheme({
 export default function MainTabs() {
   const { data: upcomingMovies, isLoading: upcomingMoviesLoading, error: upcomingMoviesError } = useQuery({
     queryKey: ['upcomingMovies'],
-    queryFn: async () => getUpcomingMovies(),
+    queryFn: async () => requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/upcoming`)),
   });
   const { data: streamingMovies, isLoading: streamingMoviesLoading, error: streamingMoviesError } = useQuery({
-    queryKey: 'streamingMovies',
+    queryKey: ['streamingMovies'],
     queryFn: async () => getExpiringMovies(),
   });
   const { data: releasingMovies, isLoading: releasingMoviesLoading, error: releasingMoviesError } = useQuery({
-    queryKey: 'releasingMovies',
+    queryKey: ['releasingMovies'],
     queryFn: async () => getReleasingMovies(),
   });
 
@@ -67,7 +68,7 @@ export default function MainTabs() {
   const [value, setValue] = useState(getTabValue(path));
   // 영화 상세 정보 다이얼로그에 쓰이는 state
   const [open, setOpen] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState({});
 
 
   useEffect(() => {
@@ -120,7 +121,6 @@ export default function MainTabs() {
           movieOverViewDialog={<MovieOverViewDialog open={open} handleClose={handleClose}
             selectedMovie={selectedMovie} />}
         />} />
-
         <Route path="releasing" element={<MovieList
           imageList={<MovieImageList movies={releasingMovies.movies} error={releasingMovies.error}
             handleOpen={handleOpen} guideText={"개봉 중인 영화가 없습니다."} />}
