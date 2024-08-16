@@ -3,67 +3,58 @@ import { initializeApp as fcm } from "firebase/app";
 import {
   getMessaging, getToken, deleteToken,
 } from "firebase/messaging";
+import axios from "axios";
 
 const app = fcm(FIREBASE_CONFIG);
 const messaging = getMessaging(app);
 
-class AlarmStatus {
-  permission = "default" || "granted" || "denied";
-  subscribe = [false, false];
-  error = null;
-
-  constructor(permission, subscribe) {
-    this.permission = permission;
-    this.subscribe = subscribe;
-  }
+interface AlarmStatus {
+  permission: string;
+  subscribe: Array<boolean>;
+  error: any;
 }
 
-class SubscriptionResponse {
-  status = "subscribe" || "unsubscribe" || "error";
-  error = null;
+interface SubscriptionResponse {
+  status: string;
+  error: any;
+}
 
-  constructor({ status, error }) {
-    this.status = status;
-    this.error = error;
-  }
+interface TokenTime {
+  newToken: string;
+  newTime: string;
+}
+
+interface TopicContents {
+  topicContents: Array<string>;
 }
 
 
-async function handleInitialSubscription() {
+async function handleInitialSubscription(): Promise<AlarmStatus> {
   console.log("초기화 작업 시작")
   const permission = checkPermission();
   if (permission === 'granted') {
     try {
       const token = await getToken(messaging);
       const result = await checkTokenTimeStamps(token);
-      const topicContents = await getCheckedTopicsSubscribed(result.newToken);
-      return new AlarmStatus(permission, [topicContents.includes('upcoming_movie'), topicContents.includes('netflix_expiring')]);
+      const topicContents = (await getCheckedTopicsSubscribed(result.newToken)).topicContents;
+      return { permission, subscribe: [topicContents.includes('upcoming_movie'), topicContents.includes('netflix_expiring')], error: null };
     } catch (error) {
       console.error("초기 구독 확인 실패", error);
-      return new AlarmStatus(permission, [false, false], error);
+      return { permission, subscribe: [false, false], error };
     }
   }
-  return new AlarmStatus(false, [false, false]);
+  return { permission, subscribe: [false, false], error: null };
 }
 
-async function getCheckedTopicsSubscribed(token) {
-  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/subscriptions?token=${token}`;
-  return await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors'
-    ,
-  }).then(r => r.json())
-    .then((data) => {
-      const { value } = data;
-      return value.data;
-    })
+async function getCheckedTopicsSubscribed(token: string): Promise<TopicContents> {
+  const response = await axios.get(`${process.env.REACT_APP_ALARM_API_URL}/api/subscriptions?token=${token}`)
+    .then(r => r.data)
     .catch((error) => {
       console.error("토픽 확인 실패", error);
       return [];
     });
+
+  return response;
 }
 
 async function handleAlarmPermission() {
@@ -74,33 +65,31 @@ async function handleAlarmPermission() {
   }
   if (permission === 'denied') {
     await requestPermission().then(() => {
-      checkPermission().then(result => {
-        return result === 'granted';
-      });
+      const permission = checkPermission();
+      return permission === 'granted';
     });
   }
   if (permission === 'default') {
     await requestPermission().then(() => {
-      checkPermission().then(result => {
-        return result === 'granted';
-      });
+      const permission = checkPermission();
+      return permission === 'granted';
     });
   }
 }
 
-function checkPermission() {
+function checkPermission(): string {
   try {
     const permission = Notification.permission;
     console.log('Notification permission:', permission);
     return permission;
   } catch (error) {
     console.error('An error occurred while checking permission. ', error);
-    return false;
+    return 'default';
   }
 }
 
-async function handleUpcomingMovieSubscribe(checkedPermission,
-  checkedSubscribe) {
+async function handleUpcomingMovieSubscribe(checkedPermission: boolean,
+  checkedSubscribe: boolean) {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkedSubscribe) {
@@ -115,7 +104,7 @@ async function handleUpcomingMovieSubscribe(checkedPermission,
   }
 }
 
-async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
+async function handleNetflixSubscribe(checkedPermission: boolean, checkNetflix: boolean) {
   if (checkedPermission) {
     const token = await getToken(messaging);
     if (!checkNetflix) {
@@ -130,7 +119,7 @@ async function handleNetflixSubscribe(checkedPermission, checkNetflix) {
   }
 }
 
-async function subscribed(token, topic) {
+async function subscribed(token: string, topic: string): Promise<SubscriptionResponse> {
   /*
    1. 토큰이 존재하는 지 찾는다
    2. 토큰이 존재하면 해당 토큰을 사용하여 토픽을 구독한다
@@ -144,14 +133,14 @@ async function subscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
-    return new SubscriptionResponse({ status: "subscribe" });
+    return { status: "subscribe", error: null };
   }).catch((error) => {
     console.error("구독 실패", error);
-    return new SubscriptionResponse({ status: "error", error: error });
+    return { status: "error", error: error };
   });
 }
 
-async function unsubscribed(token, topic) {
+async function unsubscribed(token: string, topic: string): Promise<SubscriptionResponse> {
   const url = `${process.env.REACT_APP_ALARM_API_URL}/api/unsubscribe`;
   return await fetch(url, {
     method: 'POST',
@@ -161,44 +150,39 @@ async function unsubscribed(token, topic) {
     mode: 'cors',
     body: JSON.stringify({ token: token, topic: topic })
   }).then(r => {
-    return new SubscriptionResponse({ status: "unsubscribe" });
+    return { status: "unsubscribe", error: null };
   }
   ).catch((error) => {
     console.error("구독 해제 실패", error);
-    return new SubscriptionResponse({ status: "error", error: error });
+    return { status: "error", error: error };
   });
 }
 
-async function checkTokenTimeStamps(token) {
+async function checkTokenTimeStamps(token: string): Promise<TokenTime> {
   /*
   1. 토큰의 시간이 한 달이 지났는지 확인한다.
   2. 한 달이 지났으면 새로운 토큰을 생성하고 시간을 업데이트한다.
   3. 한 달이 지나지 않았으면 토큰을 그대로 사용한다.
    */
-  const url = `${process.env.REACT_APP_ALARM_API_URL}/api/timestamp?token=${token}`;
-  const { data, error } = fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  }).then(r => r.json())
-    .then((data) => {
-      return data.value
-    })
+  interface TokenStampResponse {
+    kind: string;
+    value?: { data: boolean };
+    error?: any;
+  }
+  const response: TokenStampResponse = await axios.get(`${process.env.REACT_APP_ALARM_API_URL}/api/timestamp?token=${token}`)
+    .then(r => r.data)
     .catch((error) => {
-      console.error("토큰 타임스탬프 확인 실패", error);
-      return { error: true };
-    })
-  if (!error && data) {
-    console.log('토큰이 만료됨');
-    const { newToken, newTime } = await updateTokenAndTime(token);
-    return { newToken, newTime };
+      console.error("토큰 시간 확인 실패", error);
+      return { newToken: token, newTime: "" };
+    });
+  console.log(response);
+  if (response.value?.data) {
+    return await updateTokenAndTime(token);
   }
   return { newToken: token, newTime: "" };
 }
 
-async function updateTokenAndTime(token) {
+async function updateTokenAndTime(token: string): Promise<TokenTime> {
   const date = new Date();
   const newTime = date.toISOString().split('T')[0];
   await deleteToken(messaging);
@@ -222,6 +206,7 @@ async function createTokenAndTime() {
     return { newToken, newTime };
   } catch (error) {
     console.error('An error occurred while retrieving token. ', error);
+    return { newToken: "", newTime: "" }
   }
 }
 
