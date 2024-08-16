@@ -16,20 +16,21 @@ interface ExpiringMovie {
 }
 interface ExpiringMovieResponse {
     movies: Array<ExpiringMovie>;
-    error: ResponseError | undefined;
+    error: ResponseError;
 }
 
 export default async function getExpiringMovies(): Promise<ExpiringMovieResponse> {
     const expiringMovies: ExpiringMovieResponse = {
         movies: [],
-        error: undefined
+        error: {
+            data: {
+                message: '',
+                status: 0
+            },
+            isError: false
+        }
     };
     const response = await requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/streaming/expired`));
-    if ('status' in response.data) {
-        expiringMovies.error = response;
-        return expiringMovies;
-    }
-
     expiringMovies.movies = response.data;
 
     return expiringMovies;
