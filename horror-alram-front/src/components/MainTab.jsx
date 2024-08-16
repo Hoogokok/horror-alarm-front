@@ -54,7 +54,7 @@ export default function MainTabs() {
   });
   const { data: streamingMovies, isLoading: streamingMoviesLoading, error: streamingMoviesError } = useQuery({
     queryKey: ['streamingMovies'],
-    queryFn: async () => getExpiringMovies(),
+    queryFn: async () =>  requestMovieApi(async () => await axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/api/releasing`)),
   });
   const { data: releasingMovies, isLoading: releasingMoviesLoading, error: releasingMoviesError } = useQuery({
     queryKey: ['releasingMovies'],
