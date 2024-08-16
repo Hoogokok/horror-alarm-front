@@ -21,7 +21,7 @@ export default async function requestMovieInfo(request: () => Promise<AxiosRespo
     return requestResultInfo;
 }
 
-async function requestMovieApi(
+export async function requestMovieApi(
     request: () => Promise<AxiosResponse | ResponseError>
 ): Promise<AxiosResponse | ResponseError> {
     try {
