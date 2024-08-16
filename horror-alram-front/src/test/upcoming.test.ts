@@ -1,5 +1,6 @@
 import { expect, test, vi } from 'vitest'
 import { getUpcomingMovies } from '../functions/upcoming'
+import { release } from 'os'
 
 // 테스트 데이터 정의
 const successResponse = {
@@ -7,9 +8,10 @@ const successResponse = {
         {
             id: 1,
             title: 'test',
-            poster_path: 'test.jpg',
+            posterPath: 'test.jpg',
             overview: 'test overview',
-            theaters: ['test1', 'test2']
+            theaters: ['test1', 'test2'],
+            releaseDate: '2021-10-10'
         }
     ],
     error: undefined

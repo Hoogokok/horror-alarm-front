@@ -2,7 +2,8 @@ import axios, { Axios, AxiosError, AxiosResponse } from 'axios';
 export interface MovieResponse {
     id: number;
     title: string;
-    poster_path: string;
+    releaseDate: string;
+    posterPath: string;
     overview: string;
     theaters: Array<string>;
 }
@@ -33,7 +34,7 @@ export async function getUpcomingMovies(): Promise<Movies> {
     return upcomingMovies;
 }
 
-async function requestMovieApi(
+export async function requestMovieApi(
     request: () => Promise<AxiosResponse | ResponseError>
 ): Promise<AxiosResponse | ResponseError> {
     try {
