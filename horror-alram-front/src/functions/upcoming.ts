@@ -4,6 +4,7 @@ export interface MovieResponse {
     title: string;
     poster_path: string;
     overview: string;
+    theaters: Array<string>;
 }
 
 export interface ResponseError {
