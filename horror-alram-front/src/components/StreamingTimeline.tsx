@@ -1,17 +1,15 @@
-import * as React from 'react';
 import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import { ListSubheader, Theme } from '@mui/material';
+import { createTheme, styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
-import {ListSubheader } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const theme = createTheme({
+const theme: Theme = createTheme({
   palette: {
     primary: {
       main: '#2F4F4F',
@@ -37,17 +35,31 @@ const Div = styled('div')({
   color: 'white',
 });
 
-export function StreamingTimeline({ movies, error }) {
+interface StreamingTimelineProps {
+  movies: {
+    expiredMovies: {
+      expiredMovies: {
+        id: number;
+        title: string;
+        expiredDate: string;
+      }[];
+    };
+  };
+  error: {
+    isError: boolean;
+  };
+}
+
+export function StreamingTimeline({ movies, error }: StreamingTimelineProps): JSX.Element {
   const expiredMovies = movies.expiredMovies.expiredMovies;
   return (
-    <ThemeProvider theme={theme}>
       <ListSubheader sx={
         {
           backgroundColor: '#2F4F4F',
           textAlign: 'center',
           color: 'white',
         }
-      }> 스트리밍 종료 예정 영화</ ListSubheader>
+      }> 스트리밍 종료 예정 영화
       {error.isError && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
       {!error.isError && expiredMovies.length === 0 && <Div>스트리밍 종료 예정인 영화가 없습니다.</Div>}
       {!error.isError && expiredMovies.length > 0 && <Timeline position="alternate">
@@ -68,6 +80,6 @@ export function StreamingTimeline({ movies, error }) {
           </TimelineItem>
         ))}
       </Timeline>}
-    </ThemeProvider>
+    </ListSubheader>
   );
 }
