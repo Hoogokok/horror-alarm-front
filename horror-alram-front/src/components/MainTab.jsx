@@ -8,7 +8,7 @@ import axios from 'axios';
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { AlramSwitchs } from "./AlramSwitchs"
+import { AlramSwitchs } from "./AlarmSwitchs"
 import { MovieList } from "./MovieList"
 import MovieImageList from './ImageList';
 import MovieOverViewDialog from './MovieOverViewDialog';

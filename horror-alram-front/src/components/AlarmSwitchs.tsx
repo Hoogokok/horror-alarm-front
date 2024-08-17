@@ -8,7 +8,7 @@ import {
   handleNetflixSubscribe,
   handleInitialSubscription
 } from "../functions/messaging";
-import AlramSwitch from "./AlramSwitch"
+import AlramSwitch from "./AlarmSwitch"
 import { useQuery, useMutation } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState } from 'react';
