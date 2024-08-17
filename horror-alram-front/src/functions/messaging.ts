@@ -36,7 +36,10 @@ async function handleInitialSubscription(): Promise<AlarmStatus> {
     try {
       const token = await getToken(messaging);
       const result = await checkTokenTimeStamps(token);
-      const topicContents = (await getCheckedTopicsSubscribed(result.newToken)).topicContents;
+      const topicContents: string[] = (await getCheckedTopicsSubscribed(result.newToken)).topicContents;
+      if (!topicContents) {
+        return { permission, subscribe: [false, false], error: null };
+      }
       return { permission, subscribe: [topicContents.includes('upcoming_movie'), topicContents.includes('netflix_expiring')], error: null };
     } catch (error) {
       console.error("초기 구독 확인 실패", error);
@@ -51,10 +54,9 @@ async function getCheckedTopicsSubscribed(token: string): Promise<TopicContents>
     .then(r => r.data)
     .catch((error) => {
       console.error("토픽 확인 실패", error);
-      return [];
+      return { topicContents: [] };
     });
-
-  return response;
+  return { topicContents: response.value.data };
 }
 
 async function handleAlarmPermission(): Promise<boolean> {
