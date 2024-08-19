@@ -7,7 +7,16 @@ const LabelText = styled('span')({
     textAlign: 'center',
 });
 
-export default function AlramSwitch({ checked, handleSwitch, message }) {
+interface AlramSwitchProps {
+    checked: boolean;
+    handleSwitch: () => void;
+    message: {
+        onMessage: string;
+        offMessage: string;
+    };
+}
+
+export default function AlramSwitch({ checked, handleSwitch, message }: AlramSwitchProps): JSX.Element {
     return (<FormControlLabel control={<Switch
         checked={checked}
         onChange={handleSwitch}

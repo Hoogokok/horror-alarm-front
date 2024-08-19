@@ -1,6 +1,6 @@
 import Container from '@mui/material/Container';
 import FormGroup from '@mui/material/FormGroup';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 import {
   handleAlarmPermission,
@@ -8,7 +8,7 @@ import {
   handleNetflixSubscribe,
   handleInitialSubscription
 } from "../functions/messaging";
-import AlramSwitch from "./AlramSwitch"
+import AlramSwitch from "./AlarmSwitch"
 import { useQuery, useMutation } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState } from 'react';
@@ -23,10 +23,12 @@ const theme = createTheme({
 
 export function AlramSwitchs() {
   const isMobile = useMediaQuery('(min-width:756px)');
-  const { data: intialSubscription, isLoading: initialLoading, isError: initialError } = useQuery({
-    queryKey: 'initialSubscription',
-    queryFn: handleInitialSubscription
-  });
+  const { data: intialSubscription =
+    { permission: 'default', subscribe: [false, false], error: '' }
+    , isLoading: initialLoading, isError: initialError } = useQuery({
+      queryKey: ['initialSubscription'],
+      queryFn: handleInitialSubscription
+    });
   const [permissionAlram, setPermissionAlram] = useState("default")
   const [upcomingSub, setUpcomingSub] = useState(false)
   const [netflixSub, setNetflixSub] = useState(false)
@@ -37,28 +39,34 @@ export function AlramSwitchs() {
     onSuccess: () => {
       const current = permissionAlram === 'default' ? 'granted' : 'default'
       setPermissionAlram(current)
-      intialSubscription.permission = current
+      if (intialSubscription) {
+        intialSubscription.permission = current
+      }
     }
   })
   const upcomingMutation = useMutation({
-    mutationFn: () => {
-      handleUpcomingMovieSubscribe(permissionAlram, upcomingSub)
+    mutationFn: async () => {
+      await handleUpcomingMovieSubscribe(permissionAlram === 'granted', upcomingSub)
     },
     onSuccess: () => {
       const current = !upcomingSub
       setUpcomingSub(current)
-      intialSubscription.subscribe[0] = current
+      if (intialSubscription) {
+        intialSubscription.subscribe[0] = current
+      }
     }
   })
 
   const netflixMutation = useMutation({
-    mutationFn: () => {
-      handleNetflixSubscribe(permissionAlram, netflixSub)
+    mutationFn: async () => {
+      await handleNetflixSubscribe(permissionAlram === 'granted', netflixSub)
     },
     onSuccess: () => {
       const current = !netflixSub
       setNetflixSub(current)
-      intialSubscription.subscribe[1] = current
+      if (intialSubscription) {
+        intialSubscription.subscribe[1] = current
+      }
     }
   })
 
@@ -82,7 +90,7 @@ export function AlramSwitchs() {
     return <div>서버 문제로 알람 초기화에 실패했습니다.</div>
   }
 
-  if (alramMutation.isLoading || upcomingMutation.isLoading || netflixMutation.isLoading) {
+  if (alramMutation.isPending || upcomingMutation.isPending || netflixMutation.isPending) {
     return <CircularProgress />
   }
 
@@ -90,8 +98,10 @@ export function AlramSwitchs() {
     return <div>알람 설정에 실패했습니다.</div>
   }
 
-
-  const { permission, subscribe } = intialSubscription
+  const { permission, subscribe, error } = intialSubscription
+  if (error) {
+    return <div>{error}</div>
+  }
   const [permissionResult, upcomingSubResult, netflixSubResult] = [permission, subscribe[0], subscribe[1]]
 
   if (permissionResult !== permissionAlram) {
@@ -116,21 +126,19 @@ export function AlramSwitchs() {
         mx: isMobile ? '300px' : '10px',
       }
     }>
-      <ThemeProvider theme={theme}>
-        <AlramSwitch
-          checked={permissionAlram}
-          handleSwitch={onAlarmPermission}
-          message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }} />
-        <AlramSwitch
-          checked={upcomingSub}
-          handleSwitch={onUpcomingMovieSubscribe}
-          message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }} />
-        <AlramSwitch
-          checked={netflixSub}
-          handleSwitch={onNetflixSubscribe}
-          message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
-        />
-      </ThemeProvider>
+      <AlramSwitch
+        checked={permissionAlram === 'granted'}
+        handleSwitch={onAlarmPermission}
+        message={{ onMessage: '알람 설정이 활성화 되었습니다.', offMessage: '알람 설정이 비활성화 되었습니다.' }} />
+      <AlramSwitch
+        checked={upcomingSub}
+        handleSwitch={onUpcomingMovieSubscribe}
+        message={{ onMessage: '개봉 예정 영화 알람이 설정되었습니다.', offMessage: '개봉 예정 영화 알람이 해제되었습니다.' }} />
+      <AlramSwitch
+        checked={netflixSub}
+        handleSwitch={onNetflixSubscribe}
+        message={{ onMessage: '넷플릭스 영화 알람이 설정되었습니다.', offMessage: '넷플릭스 영화 알람이 해제되었습니다.' }}
+      />
     </FormGroup>
   </Container>);
 }

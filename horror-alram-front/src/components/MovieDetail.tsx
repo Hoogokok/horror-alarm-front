@@ -15,8 +15,18 @@ const Img = styled('img')({
   maxHeight: '100%',
 });
 
+interface MobileMovie {
+  title: string;
+  posterPath: string;
+  overview: string;
+}
+
 export default function Detail() {
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState({
+    title: '',
+    posterPath: '',
+    overview: '',
+  });
   const { id } = useParams();
   const isMobile = useMediaQuery('(max-width:600px)'); // 모바일 환경 감지
 
@@ -64,7 +74,15 @@ export default function Detail() {
   );
 }
 
-function MobileMovieDetail({ movie }) {
+interface MobileMovieDetailProps {
+  movie: {
+    title: string;
+    posterPath: string;
+    overview: string;
+  };
+}
+
+function MobileMovieDetail({ movie }: MobileMovieDetailProps) {
   const isMobile = useMediaQuery('(max-width:600px)');
 
   if (!isMobile) {
@@ -74,7 +92,7 @@ function MobileMovieDetail({ movie }) {
   return (
 
     <Accordion
-      s sx={{
+      sx={{
         p: 2,
         margin: 'auto',
         marginTop: 5,

@@ -1,7 +1,7 @@
 import { BrowserRouter, } from 'react-router-dom'
-import MainTabs from "./components/MainTab.jsx";
+import MainTabs from "./components/MainTab.tsx";
 import { createGlobalStyle } from 'styled-components';
-import Footer from './components/Footer.jsx';
+import Footer from './components/Footer.tsx';
 import { QueryClient, QueryClientProvider} from '@tanstack/react-query'
 
 const GlobalStyle = createGlobalStyle`
