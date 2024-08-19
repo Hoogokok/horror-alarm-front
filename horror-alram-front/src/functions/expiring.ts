@@ -27,8 +27,7 @@ export default async function getExpiringMovies(expiringMovies:
         expiringMovies.error = response as ResponseError;
         return expiringMovies;
     }
-
-    expiringMovies.movies = response.data;
+    expiringMovies.movies = response.data.expiredMovies;
 
     return expiringMovies;
 }
