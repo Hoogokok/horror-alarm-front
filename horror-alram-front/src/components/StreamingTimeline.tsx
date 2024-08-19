@@ -38,12 +38,10 @@ const Div = styled('div')({
 interface StreamingTimelineProps {
   movies: {
     expiredMovies: {
-      expiredMovies: {
-        id: number;
-        title: string;
-        expiredDate: string;
-      }[];
-    };
+      id: number;
+      title: string;
+      expiredDate: string;
+    }[];
   };
   error: {
     isError: boolean;
@@ -51,15 +49,15 @@ interface StreamingTimelineProps {
 }
 
 export function StreamingTimeline({ movies, error }: StreamingTimelineProps): JSX.Element {
-  const expiredMovies = movies.expiredMovies.expiredMovies;
+  const expiredMovies = movies.expiredMovies;
   return (
-      <ListSubheader sx={
-        {
-          backgroundColor: '#2F4F4F',
-          textAlign: 'center',
-          color: 'white',
-        }
-      }> 스트리밍 종료 예정 영화
+    <ListSubheader sx={
+      {
+        backgroundColor: '#2F4F4F',
+        textAlign: 'center',
+        color: 'white',
+      }
+    }> 스트리밍 종료 예정 영화
       {error.isError && <Div>서버 문제로 데이터를 불러오지 못합니다.</Div>}
       {!error.isError && expiredMovies.length === 0 && <Div>스트리밍 종료 예정인 영화가 없습니다.</Div>}
       {!error.isError && expiredMovies.length > 0 && <Timeline position="alternate">
